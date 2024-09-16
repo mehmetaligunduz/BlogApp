@@ -1,8 +1,6 @@
 package com.scalefocus.blogapp.resource;
 
-import com.scalefocus.blogapp.model.CreatePostRequest;
-import com.scalefocus.blogapp.model.CreatePostResponse;
-import com.scalefocus.blogapp.model.GetPostsResponse;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +27,10 @@ public class PostController {
         return postService.getAll();
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long id) {
+        return ResponseEntity.ok(postService.update(updatePostRequest.toEntity(), id));
+    }
 
 }
 
