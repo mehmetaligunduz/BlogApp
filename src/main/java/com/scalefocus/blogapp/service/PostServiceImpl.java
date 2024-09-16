@@ -3,6 +3,7 @@ package com.scalefocus.blogapp.service;
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.model.GetPostsResponse;
+import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.projection.PostSummaryProjection;
 import com.scalefocus.blogapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,18 @@ public class PostServiceImpl implements PostService {
                         post.getSummaryText())).collect(Collectors.toList());
     }
 
+    @Override
+    public UpdatePostResponse update(PostEntity postEntity, Long id) {
+        return postRepository.findById(id)
+                .map(post -> {
+                    post.setTitle(postEntity.getTitle());
+                    post.setText(postEntity.getText());
+
+                    final PostEntity updatedPost = postRepository.save(post);
+
+                    return new UpdatePostResponse(updatedPost.getTitle(), updatedPost.getText());
+                    
+                }).orElse(null);
+    }
 
 }
