@@ -2,14 +2,14 @@ package com.scalefocus.blogapp.resource;
 
 import com.scalefocus.blogapp.model.CreatePostRequest;
 import com.scalefocus.blogapp.model.CreatePostResponse;
+import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -23,6 +23,12 @@ public class PostController {
         final CreatePostResponse createPostResponse = postService.create(createPostRequest.toEntity());
         return ResponseEntity.ok(createPostResponse);
     }
+
+    @GetMapping
+    public List<GetPostsResponse> getAllPosts() {
+        return postService.getAll();
+    }
+
 
 }
 
