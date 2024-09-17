@@ -23,4 +23,6 @@ public interface PostService {
 
     List<GetPostsByTagResponse> findAllByTag(String tag);
 
+    List<PostEntity> saveAll(List<PostEntity> postEntities);
+
 }
