@@ -1,7 +1,9 @@
 package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
+import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.model.CreatePostResponse;
+import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.projection.PostSummaryProjection;
@@ -56,6 +58,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public Optional<PostEntity> findById(Long id) {
         return postRepository.findById(id);
+    }
+
+    @Override
+    public List<GetPostsByTagResponse> findAllByTag(String tag) {
+
+        List<PostEntity> allByTag = postRepository.findAllByTag(tag);
+
+        return allByTag.stream().map(post ->
+                new GetPostsByTagResponse(
+                        post.getTitle(),
+                        post.getText().substring(0, 100).concat("..."),
+                        post.getTags()
+                                .stream()
+                                .map(TagEntity::getTag)
+                                .collect(Collectors.toList())
+                )).collect(Collectors.toList());
     }
 
 }
