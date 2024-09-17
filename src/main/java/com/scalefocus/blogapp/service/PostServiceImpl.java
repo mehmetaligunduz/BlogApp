@@ -6,34 +6,43 @@ import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
-import com.scalefocus.blogapp.projection.PostSummaryProjection;
 import com.scalefocus.blogapp.repository.PostRepository;
+import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
+    public static final String ELLIPSIS = "...";
+
     private final PostRepository postRepository;
+
+    private final TagRepository tagRepository;
 
     @Override
     public CreatePostResponse create(PostEntity postEntity) {
-        final PostEntity save = postRepository.save(postEntity);
+        PostEntity save = postRepository.save(postEntity);
         return new CreatePostResponse(save.getId());
     }
 
     @Override
     public List<GetPostsResponse> getAll() {
-        final List<PostSummaryProjection> allPosts = postRepository.findAllWithSummaryText();
+        final List<PostEntity> allPosts = postRepository.findAll();
         return allPosts.stream()
                 .map(post -> new GetPostsResponse(
                         post.getTitle(),
-                        post.getSummaryText())).collect(Collectors.toList());
+                        post.getText()
+                                .substring(0, post.getText().length() / 2)
+                                .trim()
+                                .concat(ELLIPSIS)))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -63,22 +72,28 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<GetPostsByTagResponse> findAllByTag(String tag) {
 
-        List<PostEntity> allByTag = postRepository.findAllByTag(tag);
+        Optional<TagEntity> tagEntity = tagRepository.findByTag(tag);
+
+        if (tagEntity.isEmpty()) {
+            return null;
+        }
+
+        List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
+
 
         return allByTag.stream().map(post ->
                 new GetPostsByTagResponse(
                         post.getTitle(),
-                        post.getText().substring(0, 100).concat("..."),
+                        post.getText()
+                                .substring(0, post.getText().length() / 2)
+                                .trim()
+                                .concat(ELLIPSIS),
                         post.getTags()
                                 .stream()
                                 .map(TagEntity::getTag)
-                                .collect(Collectors.toList())
+                                .collect(Collectors.toSet())
                 )).collect(Collectors.toList());
-    }
 
-    @Override
-    public List<PostEntity> saveAll(List<PostEntity> postEntities) {
-        return postRepository.saveAll(postEntities);
     }
 
 }

@@ -8,33 +8,39 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/post")
+@RequestMapping(value = "/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
-        final CreatePostResponse createPostResponse = postService.create(createPostRequest.toEntity());
-        return ResponseEntity.ok(createPostResponse);
+    public ResponseEntity<Optional<CreatePostResponse>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+        return ResponseEntity
+                .ok(postService
+                        .create(createPostRequest.toEntity()));
     }
 
     @GetMapping
-    public List<GetPostsResponse> getAllPosts() {
+    public Optional<List<GetPostsResponse>> getPosts() {
         return postService.getAll();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long id) {
-        return ResponseEntity.ok(postService.update(updatePostRequest.toEntity(), id));
+    @PutMapping("/{postId}")
+    public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long postId) {
+        return ResponseEntity
+                .ok(postService
+                        .update(updatePostRequest.toEntity(), postId));
     }
 
-    @GetMapping("/tag")
-    public List<GetPostsByTagResponse> getAllByTags(@RequestParam String q) {
-        return postService.findAllByTag(q);
+    @GetMapping("/{tag}")
+    public List<GetPostsByTagResponse> getPostsByTag(@PathVariable String tag) {
+
+        return postService.findAllByTag(tag);
+
     }
 
 }
