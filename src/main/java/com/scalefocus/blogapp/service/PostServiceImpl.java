@@ -76,4 +76,9 @@ public class PostServiceImpl implements PostService {
                 )).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PostEntity> saveAll(List<PostEntity> postEntities) {
+        return postRepository.saveAll(postEntities);
+    }
+
 }
