@@ -32,5 +32,10 @@ public class PostController {
         return ResponseEntity.ok(postService.update(updatePostRequest.toEntity(), id));
     }
 
+    @GetMapping("/tag")
+    public List<GetPostsByTagResponse> getAllByTags(@RequestParam String q) {
+        return postService.findAllByTag(q);
+    }
+
 }
 
