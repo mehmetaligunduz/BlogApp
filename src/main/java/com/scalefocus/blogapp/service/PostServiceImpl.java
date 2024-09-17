@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,8 +44,18 @@ public class PostServiceImpl implements PostService {
                     final PostEntity updatedPost = postRepository.save(post);
 
                     return new UpdatePostResponse(updatedPost.getTitle(), updatedPost.getText());
-                    
+
                 }).orElse(null);
+    }
+
+    @Override
+    public PostEntity save(PostEntity postEntity) {
+        return postRepository.save(postEntity);
+    }
+
+    @Override
+    public Optional<PostEntity> findById(Long id) {
+        return postRepository.findById(id);
     }
 
 }
