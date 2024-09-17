@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,6 +27,14 @@ public class PostEntity {
 
     @Column(nullable = false)
     private String text;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<TagEntity> tags;
 
     @CreatedDate
     @Column(name = "created_date", updatable = false)

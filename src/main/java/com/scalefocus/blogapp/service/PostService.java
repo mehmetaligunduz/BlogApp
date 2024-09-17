@@ -6,6 +6,7 @@ import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostService {
 
@@ -14,5 +15,9 @@ public interface PostService {
     List<GetPostsResponse> getAll();
 
     UpdatePostResponse update(PostEntity postEntity, Long id);
+
+    PostEntity save(PostEntity postEntity);
+
+    Optional<PostEntity> findById(Long id);
 
 }
