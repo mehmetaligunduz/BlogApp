@@ -18,7 +18,7 @@
 
 ### Prerequisites
 
-- **Java 17** or higher
+- **Java 21**
 - **Gradle**
 - **H2** database
 
