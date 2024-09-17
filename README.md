@@ -1,4 +1,5 @@
-**BlogApp** is a Java-based API designed to manage and interact with blog posts. Built using modern technologies, this application allows users to create, update, and view blog posts. It showcases key concepts in RESTful API development and Java Spring Boot.
+##BlogApp 
+is a Java-based API designed to manage and interact with blog posts. Built using modern technologies, this application allows users to create, update, and view blog posts. It showcases key concepts in RESTful API development and Java Spring Boot.
 
 ## Features
 
