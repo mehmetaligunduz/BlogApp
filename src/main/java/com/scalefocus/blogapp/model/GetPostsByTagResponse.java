@@ -1,22 +1,14 @@
 package com.scalefocus.blogapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.scalefocus.blogapp.model.base.TagBaseModel;
 
-import java.util.List;
+import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class GetPostsByTagResponse {
+public class GetPostsByTagResponse extends TagBaseModel {
 
-    private String title;
+    public GetPostsByTagResponse(String title, String text, Set<String> tags) {
 
-    private String summaryText;
+        super(title, text, tags);
 
-    private List<String> tags;
-
+    }
 }

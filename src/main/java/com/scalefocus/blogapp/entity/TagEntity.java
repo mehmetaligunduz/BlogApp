@@ -14,11 +14,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Table(name = "tags", uniqueConstraints = @UniqueConstraint(columnNames = {"tag"}))
-public class TagEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class TagEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String tag;

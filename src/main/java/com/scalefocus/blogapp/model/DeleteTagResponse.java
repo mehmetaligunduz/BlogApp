@@ -1,22 +1,14 @@
 package com.scalefocus.blogapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.scalefocus.blogapp.model.base.TagBaseModel;
 
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class DeleteTagResponse {
+public class DeleteTagResponse extends TagBaseModel {
 
-    private String title;
+    public DeleteTagResponse(String title, String text, Set<String> tags) {
 
-    private String text;
+        super(title, text, tags);
 
-    private Set<String> tags;
-
+    }
 }

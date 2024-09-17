@@ -1,20 +1,12 @@
 package com.scalefocus.blogapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.scalefocus.blogapp.model.base.TagBaseModel;
 
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class AddTagResponse {
+public class AddTagResponse extends TagBaseModel {
 
-    private String title;
-
-    private String text;
-
-    private Set<String> tags;
-
+    public AddTagResponse(String title, String text, Set<String> tags) {
+        super(title, text, tags);
+    }
 }

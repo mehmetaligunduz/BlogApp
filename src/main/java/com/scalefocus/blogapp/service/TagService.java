@@ -11,6 +11,5 @@ public interface TagService {
     AddTagResponse addTag(Set<TagEntity> tags, Long postId);
 
     DeleteTagResponse deleteTag(TagEntity tagEntity, Long postId);
-
-
+    
 }

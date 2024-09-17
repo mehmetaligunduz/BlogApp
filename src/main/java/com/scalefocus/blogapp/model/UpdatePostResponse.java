@@ -1,16 +1,10 @@
 package com.scalefocus.blogapp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import com.scalefocus.blogapp.model.base.PostBaseModel;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class UpdatePostResponse {
+public class UpdatePostResponse extends PostBaseModel {
 
-    private String title;
-
-    private String text;
-
+    public UpdatePostResponse(String title, String text) {
+        super(title, text);
+    }
 }

@@ -12,20 +12,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/tag")
+@RequestMapping(value = "/tag-management")
 public class TagController {
 
     private final TagService tagService;
 
-    @PostMapping("/{postId}")
-    public ResponseEntity<AddTagResponse> addTagToPost(@RequestBody AddTagRequest addTagRequest, @PathVariable Long postId) {
+    @PostMapping("/add-tag/posts/{postId}")
+    public ResponseEntity<AddTagResponse> addTagToPost(@RequestBody AddTagRequest addTagRequest,
+                                                       @PathVariable Long postId) {
 
         return ResponseEntity.ok(tagService.addTag(addTagRequest.toTagEntity(), postId));
 
     }
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<DeleteTagResponse> deleteTagFromPost(@RequestBody @Valid DeleteTagRequest deleteTagRequest, @PathVariable Long postId) {
+    @DeleteMapping("delete-tag/posts/{postId}")
+    public ResponseEntity<DeleteTagResponse> deleteTagFromPost(@RequestBody @Valid DeleteTagRequest deleteTagRequest,
+                                                               @PathVariable Long postId) {
 
         return ResponseEntity.ok(tagService.deleteTag(deleteTagRequest.toTagEntity(), postId));
 
