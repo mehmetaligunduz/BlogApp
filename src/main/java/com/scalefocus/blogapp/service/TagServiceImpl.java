@@ -8,6 +8,7 @@ import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +40,11 @@ public class TagServiceImpl implements TagService {
                 )
                 .collect(Collectors.toSet());
 
-        post.get().getTags().addAll(tagEntities);
+        if (post.get().getTags() == null) {
+            post.get().setTags(tagEntities);
+        } else {
+            post.get().getTags().addAll(tagEntities);
+        }
 
         final PostEntity taggedPost = postService.save(post.get());
 
@@ -63,10 +68,11 @@ public class TagServiceImpl implements TagService {
             return null;
         }
 
-        Set<TagEntity> tags = post.get().getTags();
+        Set<TagEntity> tags = new HashSet<>(post.get().getTags());
 
         tags.remove(tagEntity);
 
+        post.get().setTags(tags);
         final PostEntity deletedTagPost = postService.save(post.get());
 
         return new DeleteTagResponse(
