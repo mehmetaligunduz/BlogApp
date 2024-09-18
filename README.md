@@ -76,49 +76,38 @@
 ### ```GET /posts``` Retrieve all blog posts.
       curl --location 'localhost:8080/posts'
       
-
 ### ```POST /posts``` Create a new blog post.
-      ```
       curl --location 'localhost:8080/posts' \
       --header 'Content-Type: application/json' \
       --data '{
           "title": "Top 10 Java Libraries You Should Know",
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
-      ```
       
 ### ```PUT /posts/{postId}``` Update an existing post by postId
-      ```
       curl --location --request PUT 'localhost:8080/posts/1' \
       --header 'Content-Type: application/json' \
       --data '{
           "title": "Understanding REST APIs",
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
-      ```
 
 ### ```GET /posts/{tag}``` Retrieve posts associated with a specific tag
-      ```
       curl --location 'localhost:8080/posts/development'
-      ```
 
 ### ```POST /tag-management/add-tag/posts/{postId}``` Add tag to post
-      ```
       curl --location 'localhost:8080/tag-management/add-tag/posts/1' \
       --header 'Content-Type: application/json' \
       --data '{
           "tags":["IT", "Development", "Java"]
       }'
-      ```
 
 ### ```DELETE /tag-management/delete-tag/{postId}``` Delete tag from post
-      ```
       curl --location --request DELETE 'localhost:8080/tag/1' \
       --header 'Content-Type: application/json' \
       --data '{
           "tag": "IT"
       }'
-      ```
 
       
       
