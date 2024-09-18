@@ -76,6 +76,7 @@
 ### ```GET /posts``` Retrieve all blog posts.
       ```
       curl --location 'localhost:8080/posts'
+      ```
 
 ### ```POST /posts``` Create a new blog post.
       ```
@@ -85,6 +86,7 @@
           "title": "Top 10 Java Libraries You Should Know",
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
+      ```
       
 ### ```PUT /posts/{postId}``` Update an existing post by postId
       ```
@@ -94,10 +96,12 @@
           "title": "Understanding REST APIs",
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
+      ```
 
 ### ```GET /posts/{tag}``` Retrieve posts associated with a specific tag
       ```
       curl --location 'localhost:8080/posts/development'
+      ```
 
 ### ```POST /tag-management/add-tag/posts/{postId}``` Add tag to post
       ```
@@ -106,6 +110,7 @@
       --data '{
           "tags":["IT", "Development", "Java"]
       }'
+      ```
 
 ### ```DELETE /tag-management/delete-tag/{postId}``` Delete tag from post
       ```
@@ -114,6 +119,7 @@
       --data '{
           "tag": "IT"
       }'
+      ```
 
       
       
