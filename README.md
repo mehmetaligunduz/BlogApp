@@ -5,7 +5,7 @@
 
 - **Post Management**: Create, update, and view blog posts.
 - **Tagging System**: Add and remove tags for categorizing posts.
-- **Post Filtering**: Retrieve posts by tag**
+- **Post Filtering**: Retrieve posts by tag
 
 ## Technologies Used
 
@@ -66,12 +66,12 @@
 
 ## API Endpoints
 
-- **GET /posts:** Retrieve all blog posts.
-- **POST /posts:** Create a new blog post.
-- **PUT /posts/{postId}:** Update an existing post by ID.
-- **GET /posts/{tag}:** Retrieve posts associated with a specific tag
-- **POST /tag-management/add-tag/posts/{postId}:** Add tag to post
-- **DELETE /tag-management/delete-tag/{postId}:** Delete tag from post
+- **GET /posts**: Retrieve all blog posts.
+- **POST /posts**: Create a new blog post.
+- **PUT /posts/{postId}**: Update an existing post by ID.
+- **GET /posts/{tag}**: Retrieve posts associated with a specific tag
+- **POST /tag-management/add-tag/posts/{postId}**: Add tag to post
+- **DELETE /tag-management/delete-tag/{postId}**: Delete tag from post
 
 
 
