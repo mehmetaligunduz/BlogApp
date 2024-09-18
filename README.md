@@ -73,5 +73,17 @@
 - **POST /tag-management/add-tag/posts/{postId}**: Add tag to post
 - **DELETE /tag-management/delete-tag/{postId}**: Delete tag from post
 
+### GET /posts Retrieve all blog posts.
+   ```bash
+   curl --location --request GET 'localhost:8080/posts' \
+   --header 'Content-Type: application/json' \
+   --data '  {
+           "title": "Mehmet Ali",
+           "text": "In this post, we explore th"
+       }'
+
+### POST /posts: Create a new blog post.
+
+
 
 
