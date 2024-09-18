@@ -98,6 +98,24 @@
 ### GET /posts/{tag} Retrieve posts associated with a specific tag
       ```bash
       curl --location 'localhost:8080/posts/development'
+
+### POST /tag-management/add-tag/posts/{postId} Add tag to post
+      ```bash
+      curl --location 'localhost:8080/tag-management/add-tag/posts/1' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "tags":["IT", "Development", "Java"]
+      }'
+
+### DELETE /tag-management/delete-tag/{postId} Delete tag from post
+      ```bash
+      curl --location --request DELETE 'localhost:8080/tag/1' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "tag": "IT"
+      }'
+
+      
       
 
 
