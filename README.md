@@ -66,10 +66,10 @@ is a Java-based API designed to manage and interact with blog posts. Built using
 
 ## API Endpoints
 
-**GET /posts:** Retrieve all blog posts.
-**POST /posts:** Create a new blog post.
-**PUT /posts/{id}:** Update an existing post by ID.
-**GET /posts/{tagName}:** Retrieve posts associated with a specific tag
+- **GET /posts:** Retrieve all blog posts.
+- **POST /posts:** Create a new blog post.
+- **PUT /posts/{id}:** Update an existing post by ID.
+- **GET /posts/{tagName}:** Retrieve posts associated with a specific tag
 
 
 
