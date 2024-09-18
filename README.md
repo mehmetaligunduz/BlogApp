@@ -74,11 +74,11 @@
 - **DELETE /tag-management/delete-tag/{postId}**: Delete tag from post
 
 ### GET /posts Retrieve all blog posts.
-      ```bash
+      ```
       curl --location 'localhost:8080/posts'
 
 ### POST /posts: Create a new blog post.
-      ```bash
+      ```
       curl --location 'localhost:8080/posts' \
       --header 'Content-Type: application/json' \
       --data '{
@@ -87,7 +87,7 @@
       }'
       
 ### PUT /posts/{postId} Update an existing post by postId
-      ```bash
+      ```
       curl --location --request PUT 'localhost:8080/posts/1' \
       --header 'Content-Type: application/json' \
       --data '{
@@ -96,19 +96,19 @@
       }'
 
 ### GET /posts/{tag} Retrieve posts associated with a specific tag
-      ```bash
+      ```
       curl --location 'localhost:8080/posts/development'
 
 ### POST /tag-management/add-tag/posts/{postId} Add tag to post
-      ```bash
+      ```
       curl --location 'localhost:8080/tag-management/add-tag/posts/1' \
       --header 'Content-Type: application/json' \
       --data '{
           "tags":["IT", "Development", "Java"]
       }'
 
-### DELETE /tag-management/delete-tag/{postId} Delete tag from post
-      ```bash
+### ```DELETE /tag-management/delete-tag/{postId}``` Delete tag from post
+      ```
       curl --location --request DELETE 'localhost:8080/tag/1' \
       --header 'Content-Type: application/json' \
       --data '{
