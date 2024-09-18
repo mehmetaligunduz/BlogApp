@@ -107,7 +107,8 @@
           "tags":["IT", "Development", "Java"]
       }'
 
-### ```DELETE /tag-management/delete-tag/{postId}``` Delete tag from post
+```DELETE /tag-management/delete-tag/{postId}``` 
+### Delete tag from post
       ```
       curl --location --request DELETE 'localhost:8080/tag/1' \
       --header 'Content-Type: application/json' \
