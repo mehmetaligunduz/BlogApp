@@ -29,25 +29,49 @@ is a Java-based API designed to manage and interact with blog posts. Built using
    ```bash
    git clone https://github.com/mehmetaligunduz/BlogApp.git
    cd BlogApp
+
 2. Configure your database connection in src/main/resources/application.yaml:
    ```bash
-spring:
-  application:
-    name: BlogApp
-  datasource:
-    url: jdbc:h2:mem:blogappdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:initial-bootstrap.sql
-3. 
+   spring:
+     application:
+       name: BlogApp
+     datasource:
+       url: jdbc:h2:mem:blogappdb
+       driver-class-name: org.h2.Driver
+       username: sa
+       password:
+     h2:
+       console:
+         enabled: true
+     jpa:
+       hibernate:
+         ddl-auto: update
+       defer-datasource-initialization: true
+     sql:
+       init:
+         mode: always
+         data-locations: classpath:initial-bootstrap.sql
+
+3. Build the project:
+```bash
+gradle clean build
+
+4. Run the application:
+```bash
+gradle bootRun
+
+5. Open your browser and navigate to:
+```bash
+http://localhost:8080
+
+## API Endpoints
+
+**GET /posts:** Retrieve all blog posts.
+GET /posts/{id}: Retrieve a post by its ID.
+POST /posts: Create a new blog post.
+PUT /posts/{id}: Update an existing post by ID.
+DELETE /posts/{id}: Delete a post by ID.
+GET /posts/tag/{tagName}: Retrieve posts associated with a specific tag
+
+
+
