@@ -30,7 +30,8 @@ is a Java-based API designed to manage and interact with blog posts. Built using
    git clone https://github.com/mehmetaligunduz/BlogApp.git
    cd BlogApp
 2. Configure your database connection in src/main/resources/application.yaml:
-  spring:
+   ```bash
+   spring:
     datasource:
       url: jdbc:h2:mem:blogappdb
       driver-class-name: org.h2.Driver
