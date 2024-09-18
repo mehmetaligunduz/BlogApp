@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SequenceGenerator")
+    @SequenceGenerator(name = "SequenceGenerator", sequenceName = "seq_gen", allocationSize = 1, initialValue = 11)
     private Long id;
 
     @CreatedDate
@@ -26,5 +27,8 @@ public class BaseEntity {
     @LastModifiedDate
     @Column(name = "last_updated")
     private LocalDateTime updatedAt;
+
+    @Version
+    private int version = 0;
 
 }

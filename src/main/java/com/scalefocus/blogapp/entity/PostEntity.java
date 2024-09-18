@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "posts")
 public class PostEntity extends BaseEntity {
-    
+
     @Column(nullable = false)
     private String title;
 
@@ -29,9 +29,10 @@ public class PostEntity extends BaseEntity {
     private Set<TagEntity> tags;
 
 
-    public PostEntity(String title, String text) {
+    public PostEntity(String title, String text, int version) {
         this.title = title;
         this.text = text;
+        setVersion(version);
     }
 
 }
