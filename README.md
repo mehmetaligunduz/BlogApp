@@ -66,18 +66,18 @@
 
 ## API Endpoints
 
-- **GET /posts**: Retrieve all blog posts.
-- **POST /posts**: Create a new blog post.
-- **PUT /posts/{postId}**: Update an existing post by postId.
-- **GET /posts/{tag}**: Retrieve posts associated with a specific tag
-- **POST /tag-management/add-tag/posts/{postId}**: Add tag to post
-- **DELETE /tag-management/delete-tag/{postId}**: Delete tag from post
+- **```GET /posts```**: Retrieve all blog posts.
+- **```POST /posts```**: Create a new blog post.
+- **```PUT /posts/{postId}```**: Update an existing post by postId.
+- **```GET /posts/{tag}```**: Retrieve posts associated with a specific tag
+- **```POST /tag-management/add-tag/posts/{postId}```**: Add tag to post
+- **```DELETE /tag-management/delete-tag/{postId}```**: Delete tag from post
 
-### GET /posts Retrieve all blog posts.
+### ```GET /posts``` Retrieve all blog posts.
       ```
       curl --location 'localhost:8080/posts'
 
-### POST /posts: Create a new blog post.
+### ```POST /posts``` Create a new blog post.
       ```
       curl --location 'localhost:8080/posts' \
       --header 'Content-Type: application/json' \
@@ -86,7 +86,7 @@
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
       
-### PUT /posts/{postId} Update an existing post by postId
+### ```PUT /posts/{postId}``` Update an existing post by postId
       ```
       curl --location --request PUT 'localhost:8080/posts/1' \
       --header 'Content-Type: application/json' \
@@ -95,11 +95,11 @@
           "text": "Discover the top Java libraries that can help improve your productivity and code quality."
       }'
 
-### GET /posts/{tag} Retrieve posts associated with a specific tag
+### ```GET /posts/{tag}``` Retrieve posts associated with a specific tag
       ```
       curl --location 'localhost:8080/posts/development'
 
-### POST /tag-management/add-tag/posts/{postId} Add tag to post
+### ```POST /tag-management/add-tag/posts/{postId}``` Add tag to post
       ```
       curl --location 'localhost:8080/tag-management/add-tag/posts/1' \
       --header 'Content-Type: application/json' \
@@ -107,8 +107,7 @@
           "tags":["IT", "Development", "Java"]
       }'
 
-```DELETE /tag-management/delete-tag/{postId}``` 
-### Delete tag from post
+### ```DELETE /tag-management/delete-tag/{postId}``` Delete tag from post
       ```
       curl --location --request DELETE 'localhost:8080/tag/1' \
       --header 'Content-Type: application/json' \
