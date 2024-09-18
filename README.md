@@ -68,8 +68,10 @@ is a Java-based API designed to manage and interact with blog posts. Built using
 
 - **GET /posts:** Retrieve all blog posts.
 - **POST /posts:** Create a new blog post.
-- **PUT /posts/{id}:** Update an existing post by ID.
-- **GET /posts/{tagName}:** Retrieve posts associated with a specific tag
+- **PUT /posts/{postId}:** Update an existing post by ID.
+- **GET /posts/{tag}:** Retrieve posts associated with a specific tag
+- **POST /tag-management/add-tag/posts/{postId}** Add tag to post
+- **DELETE /tag-management/delete-tag/{postId}** Delete tag from post
 
 
 
