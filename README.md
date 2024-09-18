@@ -68,21 +68,39 @@
 
 - **GET /posts**: Retrieve all blog posts.
 - **POST /posts**: Create a new blog post.
-- **PUT /posts/{postId}**: Update an existing post by ID.
+- **PUT /posts/{postId}**: Update an existing post by postId.
 - **GET /posts/{tag}**: Retrieve posts associated with a specific tag
 - **POST /tag-management/add-tag/posts/{postId}**: Add tag to post
 - **DELETE /tag-management/delete-tag/{postId}**: Delete tag from post
 
 ### GET /posts Retrieve all blog posts.
-   ```bash
-   curl --location --request GET 'localhost:8080/posts' \
-   --header 'Content-Type: application/json' \
-   --data '  {
-           "title": "Mehmet Ali",
-           "text": "In this post, we explore th"
-       }'
+      ```bash
+      curl --location 'localhost:8080/posts'
 
 ### POST /posts: Create a new blog post.
+      ```bash
+      curl --location 'localhost:8080/posts' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "title": "Top 10 Java Libraries You Should Know",
+          "text": "Discover the top Java libraries that can help improve your productivity and code quality."
+      }'
+      
+### PUT /posts/{postId} Update an existing post by postId
+      ```bash
+      curl --location --request PUT 'localhost:8080/posts/1' \
+      --header 'Content-Type: application/json' \
+      --data '{
+          "title": "Understanding REST APIs",
+          "text": "Discover the top Java libraries that can help improve your productivity and code quality."
+      }'
+
+### GET /posts/{tag} Retrieve posts associated with a specific tag
+      ```bash
+      curl --location 'localhost:8080/posts/development'
+      
+
+
 
 
 
