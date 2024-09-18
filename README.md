@@ -53,25 +53,23 @@ is a Java-based API designed to manage and interact with blog posts. Built using
          data-locations: classpath:initial-bootstrap.sql
 
 3. Build the project:
-```bash
-gradle clean build
+   ```bash
+   gradle clean build
 
 4. Run the application:
-```bash
-gradle bootRun
+   ```bash
+   gradle bootRun
 
 5. Open your browser and navigate to:
-```bash
-http://localhost:8080
+   ```bash
+   http://localhost:8080
 
 ## API Endpoints
 
 **GET /posts:** Retrieve all blog posts.
-GET /posts/{id}: Retrieve a post by its ID.
-POST /posts: Create a new blog post.
-PUT /posts/{id}: Update an existing post by ID.
-DELETE /posts/{id}: Delete a post by ID.
-GET /posts/tag/{tagName}: Retrieve posts associated with a specific tag
+**POST /posts:** Create a new blog post.
+**PUT /posts/{id}:** Update an existing post by ID.
+**GET /posts/{tagName}:** Retrieve posts associated with a specific tag
 
 
 
