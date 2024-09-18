@@ -70,8 +70,8 @@ is a Java-based API designed to manage and interact with blog posts. Built using
 - **POST /posts:** Create a new blog post.
 - **PUT /posts/{postId}:** Update an existing post by ID.
 - **GET /posts/{tag}:** Retrieve posts associated with a specific tag
-- **POST /tag-management/add-tag/posts/{postId}** Add tag to post
-- **DELETE /tag-management/delete-tag/{postId}** Delete tag from post
+- **POST /tag-management/add-tag/posts/{postId}:** Add tag to post
+- **DELETE /tag-management/delete-tag/{postId}:** Delete tag from post
 
 
 
