@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/posts")
@@ -18,14 +17,14 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<Optional<CreatePostResponse>> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+    public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         return ResponseEntity
                 .ok(postService
                         .create(createPostRequest.toEntity()));
     }
 
     @GetMapping
-    public Optional<List<GetPostsResponse>> getPosts() {
+    public List<GetPostsResponse> getPosts() {
         return postService.getAll();
     }
 
