@@ -59,7 +59,7 @@ public class PostServiceUnitTest {
         verify(postRepository, times(1)).save(postEntity);
 
     }
-
+    
     @Test
     void testGetAllPosts() {
 
