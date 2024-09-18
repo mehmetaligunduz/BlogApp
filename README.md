@@ -73,10 +73,10 @@
 - **```POST /tag-management/add-tag/posts/{postId}```**: Add tag to post
 - **```DELETE /tag-management/delete-tag/{postId}```**: Delete tag from post
 
-### ```GET /posts``` Retrieve all blog posts.
+### ```GET /posts``` Retrieve all blog posts
       curl --location 'localhost:8080/posts'
       
-### ```POST /posts``` Create a new blog post.
+### ```POST /posts``` Create a new blog post
       curl --location 'localhost:8080/posts' \
       --header 'Content-Type: application/json' \
       --data '{
