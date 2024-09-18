@@ -74,9 +74,8 @@
 - **```DELETE /tag-management/delete-tag/{postId}```**: Delete tag from post
 
 ### ```GET /posts``` Retrieve all blog posts.
-      ```
       curl --location 'localhost:8080/posts'
-      ```
+      
 
 ### ```POST /posts``` Create a new blog post.
       ```
