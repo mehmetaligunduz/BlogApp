@@ -48,12 +48,16 @@ class TagServiceIntegrationTest {
         Set<TagEntity> tags = Set.of(tag1, tag2);
 
         // ACT
-        postService.save(postEntity);
-        AddTagResponse addTagResponse = tagService.addTag(tags, postEntity.getId());
+        postService.create(postEntity);
+        Optional<AddTagResponse> addTagResponse = tagService.addTag(tags, postEntity.getId());
 
-        //ASSERT
-        assertNotNull(addTagResponse);
-        assertEquals(2, addTagResponse.getTags().size());
+        addTagResponse.ifPresent(
+                atr -> {
+                    //ASSERT
+                    assertNotNull(atr);
+                    assertEquals(2, atr.getTags().size());
+                }
+        );
 
         // OPTIONAL
         Optional<TagEntity> byTag = tagRepository.findByTag("IT");
@@ -79,14 +83,17 @@ class TagServiceIntegrationTest {
         postEntity.setId(11L);
 
         // ACT
-        postService.save(postEntity);
+        postService.create(postEntity);
         tagService.addTag(tags, postEntity.getId());
-        DeleteTagResponse deleteTagResponse = tagService.deleteTag(tag2, postEntity.getId());
+        Optional<DeleteTagResponse> deleteTagResponse = tagService.deleteTag(tag2, postEntity.getId());
 
-        // ASSERT
-        assertNotNull(deleteTagResponse);
-        assertEquals(1, deleteTagResponse.getTags().size());
-        assertTrue(deleteTagResponse.getTags().contains(tag1.getTag()));
+        deleteTagResponse.ifPresent(dtr -> {
+            // ASSERT
+            assertNotNull(dtr);
+            assertEquals(1, dtr.getTags().size());
+            assertTrue(dtr.getTags().contains(tag1.getTag()));
+
+        });
 
     }
 

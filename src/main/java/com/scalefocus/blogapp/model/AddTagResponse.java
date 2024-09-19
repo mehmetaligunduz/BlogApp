@@ -9,4 +9,7 @@ public class AddTagResponse extends TagBaseModel {
     public AddTagResponse(String title, String text, Set<String> tags) {
         super(title, text, tags);
     }
+
+    public AddTagResponse() {
+    }
 }

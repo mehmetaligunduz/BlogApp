@@ -22,12 +22,14 @@ public class TagServiceImpl implements TagService {
     private final PostService postService;
 
     @Override
-    public AddTagResponse addTag(Set<TagEntity> tags, Long postId) {
+    public Optional<AddTagResponse> addTag(Set<TagEntity> tags, Long postId) {
 
         Optional<PostEntity> post = postService.findById(postId);
 
         if (post.isEmpty()) {
-            return null;
+
+            return Optional.empty();
+
         }
 
         Set<TagEntity> tagEntities = tags.stream()
@@ -40,32 +42,43 @@ public class TagServiceImpl implements TagService {
                 )
                 .collect(Collectors.toSet());
 
-        if (post.get().getTags() == null) {
-            post.get().setTags(tagEntities);
+
+        PostEntity getPost = post.get();
+
+        if (getPost.getTags() == null) {
+
+            getPost.setTags(tagEntities);
+
         } else {
-            post.get().getTags().addAll(tagEntities);
+
+            getPost.getTags().addAll(tagEntities);
+            
         }
 
-        final PostEntity taggedPost = postService.save(post.get());
+        Optional<PostEntity> taggedPost = postService.create(getPost);
 
-        return new AddTagResponse(
-                taggedPost.getTitle(),
-                taggedPost.getText(),
-                taggedPost
-                        .getTags()
-                        .stream()
-                        .map(TagEntity::getTag)
-                        .collect(Collectors.toSet())
-        );
+        return taggedPost.map(postEntity ->
+                new AddTagResponse(
+                        postEntity.getTitle(),
+                        postEntity.getText(),
+                        postEntity
+                                .getTags()
+                                .stream()
+                                .map(TagEntity::getTag)
+                                .collect(Collectors.toSet())
+                ));
+
     }
 
     @Override
-    public DeleteTagResponse deleteTag(TagEntity tagEntity, Long postId) {
+    public Optional<DeleteTagResponse> deleteTag(TagEntity tagEntity, Long postId) {
 
         Optional<PostEntity> post = postService.findById(postId);
 
         if (post.isEmpty()) {
-            return null;
+
+            return Optional.empty();
+
         }
 
         Set<TagEntity> tags = new HashSet<>(post.get().getTags());
@@ -73,17 +86,19 @@ public class TagServiceImpl implements TagService {
         tags.remove(tagEntity);
 
         post.get().setTags(tags);
-        final PostEntity deletedTagPost = postService.save(post.get());
 
-        return new DeleteTagResponse(
-                deletedTagPost.getTitle(),
-                deletedTagPost.getText(),
-                deletedTagPost
-                        .getTags()
-                        .stream()
-                        .map(TagEntity::getTag)
-                        .collect(Collectors.toSet())
-        );
+        Optional<PostEntity> deletedTagPost = postService.create(post.get());
+
+        return deletedTagPost.map(postEntity ->
+                new DeleteTagResponse(
+                        postEntity.getTitle(),
+                        postEntity.getText(),
+                        postEntity
+                                .getTags()
+                                .stream()
+                                .map(TagEntity::getTag)
+                                .collect(Collectors.toSet())
+                ));
 
     }
 

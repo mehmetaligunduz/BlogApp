@@ -21,16 +21,22 @@ public class TagController {
     public ResponseEntity<AddTagResponse> addTagToPost(@RequestBody AddTagRequest addTagRequest,
                                                        @PathVariable Long postId) {
 
-        return ResponseEntity.ok(tagService.addTag(addTagRequest.toTagEntity(), postId));
-
+        return tagService.addTag(addTagRequest.toTagEntity(), postId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity
+                        .badRequest()
+                        .build());
     }
 
     @DeleteMapping("delete-tag/posts/{postId}")
     public ResponseEntity<DeleteTagResponse> deleteTagFromPost(@RequestBody @Valid DeleteTagRequest deleteTagRequest,
                                                                @PathVariable Long postId) {
 
-        return ResponseEntity.ok(tagService.deleteTag(deleteTagRequest.toTagEntity(), postId));
-
+        return tagService.deleteTag(deleteTagRequest.toTagEntity(), postId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity
+                        .badRequest()
+                        .build());
     }
 
 
