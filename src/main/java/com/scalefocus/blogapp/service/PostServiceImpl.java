@@ -2,7 +2,6 @@ package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
-import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
@@ -27,14 +26,18 @@ public class PostServiceImpl implements PostService {
     private final TagRepository tagRepository;
 
     @Override
-    public CreatePostResponse create(PostEntity postEntity) {
-        PostEntity save = postRepository.save(postEntity);
-        return new CreatePostResponse(save.getId());
+    public Optional<PostEntity> create(PostEntity postEntity) {
+
+        return Optional
+                .of(postRepository
+                        .save(postEntity));
     }
 
     @Override
     public List<GetPostsResponse> getAll() {
+
         final List<PostEntity> allPosts = postRepository.findAll();
+
         return allPosts.stream()
                 .map(post -> new GetPostsResponse(
                         post.getTitle(),
@@ -42,11 +45,13 @@ public class PostServiceImpl implements PostService {
                                 .substring(0, post.getText().length() / 2)
                                 .trim()
                                 .concat(ELLIPSIS)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public UpdatePostResponse update(PostEntity postEntity, Long id) {
+    public Optional<UpdatePostResponse> update(PostEntity postEntity, Long id) {
+
+
         return postRepository.findById(id)
                 .map(post -> {
                     post.setTitle(postEntity.getTitle());
@@ -56,30 +61,19 @@ public class PostServiceImpl implements PostService {
 
                     return new UpdatePostResponse(updatedPost.getTitle(), updatedPost.getText());
 
-                }).orElse(null);
+                });
     }
 
     @Override
-    public PostEntity save(PostEntity postEntity) {
-        return postRepository.save(postEntity);
-    }
-
-    @Override
-    public Optional<PostEntity> findById(Long id) {
-        return postRepository.findById(id);
-    }
-
-    @Override
-    public List<GetPostsByTagResponse> findAllByTag(String tag) {
+    public List<GetPostsByTagResponse> getAllByTag(String tag) {
 
         Optional<TagEntity> tagEntity = tagRepository.findByTag(tag);
 
         if (tagEntity.isEmpty()) {
-            return null;
+            return List.of();
         }
 
         List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
-
 
         return allByTag.stream().map(post ->
                 new GetPostsByTagResponse(
@@ -92,8 +86,14 @@ public class PostServiceImpl implements PostService {
                                 .stream()
                                 .map(TagEntity::getTag)
                                 .collect(Collectors.toSet())
-                )).collect(Collectors.toList());
+                )).toList();
 
     }
+
+    @Override
+    public Optional<PostEntity> findById(Long id) {
+        return postRepository.findById(id);
+    }
+
 
 }

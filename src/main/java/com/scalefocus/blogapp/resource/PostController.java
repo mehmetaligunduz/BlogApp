@@ -18,9 +18,14 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
-        return ResponseEntity
-                .ok(postService
-                        .create(createPostRequest.toEntity()));
+        return postService
+                .create(createPostRequest.toEntity())
+                .map(pe -> ResponseEntity
+                        .ok(new CreatePostResponse(pe.getId())))
+                .orElse(ResponseEntity
+                        .badRequest()
+                        .build());
+
     }
 
     @GetMapping
@@ -30,15 +35,17 @@ public class PostController {
 
     @PutMapping("/{postId}")
     public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long postId) {
-        return ResponseEntity
-                .ok(postService
-                        .update(updatePostRequest.toEntity(), postId));
+
+        return postService
+                .update(updatePostRequest.toEntity(), postId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/{tag}")
     public List<GetPostsByTagResponse> getPostsByTag(@PathVariable String tag) {
 
-        return postService.findAllByTag(tag);
+        return postService.getAllByTag(tag);
 
     }
 
