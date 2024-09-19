@@ -13,9 +13,4 @@ public class CreatePostResponse {
 
     private Long id;
 
-    public CreatePostResponse toCreatePostResponse(Long id) {
-        this.setId(id);
-        return this;
-    }
-
 }

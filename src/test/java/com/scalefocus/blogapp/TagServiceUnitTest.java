@@ -46,7 +46,7 @@ public class TagServiceUnitTest {
         Set<TagEntity> tags = Set.of(tag1, tag2);
 
         Long postId = 1L;
-
+        
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
@@ -55,26 +55,19 @@ public class TagServiceUnitTest {
         postEntity.setId(postId);
 
         when(postService.findById(postId)).thenReturn(Optional.of(postEntity));
-        when(postService.create(any(PostEntity.class))).thenReturn(Optional.of(postEntity));
+        when(postService.save(any(PostEntity.class))).thenReturn(postEntity);
         when(tagRepository.save(any(TagEntity.class))).thenReturn(tag1);
         when(tagRepository.save(any(TagEntity.class))).thenReturn(tag2);
         when(tagRepository.findByTag("tag1")).thenReturn(Optional.of(tag1));
         when(tagRepository.findByTag("tag2")).thenReturn(Optional.of(tag2));
 
         // WHEN
-        Optional<AddTagResponse> taggedPost = tagService.addTag(tags, postId);
+        AddTagResponse taggedPost = tagService.addTag(tags, postId);
 
         // THEN
-        taggedPost.ifPresent(tp -> {
-            assertEquals(postEntity.getTitle(), tp.getTitle());
-            assertEquals(postEntity.getText(), tp.getText());
-            assertEquals(
-                    tags
-                            .stream()
-                            .map(TagEntity::getTag)
-                            .collect(Collectors.toSet()), tp.getTags());
-
-        });
+        assertEquals(postEntity.getTitle(), taggedPost.getTitle());
+        assertEquals(postEntity.getText(), taggedPost.getText());
+        assertEquals(tags.stream().map(TagEntity::getTag).collect(Collectors.toSet()), taggedPost.getTags());
     }
 
     @Test
@@ -100,17 +93,14 @@ public class TagServiceUnitTest {
         when(postService.findById(postId)).thenReturn(Optional.of(postEntity));
         when(tagRepository.findByTag("IT")).thenReturn(Optional.of(tag1));
         when(tagRepository.findByTag("Java")).thenReturn(Optional.of(tag2));
-        when(postService.create(any(PostEntity.class))).thenReturn(Optional.of(postEntity));
+        when(postService.save(any(PostEntity.class))).thenReturn(postEntity);
 
         //WHEN
-        Optional<DeleteTagResponse> deleteTagResponse = tagService.deleteTag(tag1, postId);
+        DeleteTagResponse deleteTagResponse = tagService.deleteTag(tag1, postId);
 
-        deleteTagResponse.ifPresent(dtr -> {
-
-            //THEN
-            assertEquals(1, dtr.getTags().size());
-            assertEquals(tag2.getTag(), dtr.getTags().iterator().next());
-        });
+        //THEN
+        assertEquals(1, deleteTagResponse.getTags().size());
+        assertEquals(tag2.getTag(), deleteTagResponse.getTags().iterator().next());
 
     }
 

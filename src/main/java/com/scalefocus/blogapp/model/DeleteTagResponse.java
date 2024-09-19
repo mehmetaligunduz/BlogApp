@@ -11,9 +11,4 @@ public class DeleteTagResponse extends TagBaseModel {
         super(title, text, tags);
 
     }
-
-    public DeleteTagResponse() {
-    }
-
-
 }

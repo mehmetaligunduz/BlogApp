@@ -2,6 +2,7 @@ package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
+import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.GetPostsResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
@@ -21,7 +22,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PostServiceUnitTest {
+public class PostServiceUnitTest {
 
     @Mock
     PostRepository postRepository;
@@ -50,18 +51,15 @@ class PostServiceUnitTest {
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
         //WHEN
-        Optional<PostEntity> savedPost = postService.create(postEntity);
+        PostEntity savedPost = postService.save(postEntity);
 
         //THEN
-        savedPost.ifPresent(pe -> {
-            assertNotNull(pe);
-            assertEquals("Test Post", pe.getTitle());
-        });
-
+        assertNotNull(savedPost);
+        assertEquals("Test Post", savedPost.getTitle());
         verify(postRepository, times(1)).save(postEntity);
 
     }
-
+    
     @Test
     void testGetAllPosts() {
 
@@ -101,18 +99,14 @@ class PostServiceUnitTest {
 
         //WHEN
         postEntity.setTitle("Test Post Updated");
-        Optional<UpdatePostResponse> updatedPost = postService.update(postEntity, 0L);
+        UpdatePostResponse updatedPost = postService.update(postEntity, 0L);
 
-        updatedPost.ifPresent(up -> {
-
-            //THEN
-            assertNotNull(up);
-            assertNotEquals("Test Post", up.getTitle());
-            assertEquals("Test Post Updated", up.getTitle());
-            verify(postRepository, times(1)).findById(any(Long.class));
-            verify(postRepository, times(1)).save(postEntity);
-
-        });
+        //THEN
+        assertNotNull(updatedPost);
+        assertNotEquals("Test Post", updatedPost.getTitle());
+        assertEquals("Test Post Updated", updatedPost.getTitle());
+        verify(postRepository, times(1)).findById(any(Long.class));
+        verify(postRepository, times(1)).save(postEntity);
 
     }
 
@@ -134,7 +128,7 @@ class PostServiceUnitTest {
         when(postRepository.findAllByTags(Set.of(tagEntity))).thenReturn(List.of(postEntity));
 
         //WHEN
-        List<GetPostsByTagResponse> foundedPosts = postService.getAllByTag("IT");
+        List<GetPostsByTagResponse> foundedPosts = postService.findAllByTag("IT");
 
         //THEN
         assertNotNull(foundedPosts);
@@ -146,7 +140,6 @@ class PostServiceUnitTest {
 
         verify(tagRepository, times(1)).findByTag(tag);
         verify(postRepository, times(1)).findAllByTags(Set.of(tagEntity));
-
     }
 
     @Test
@@ -186,16 +179,12 @@ class PostServiceUnitTest {
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
         //WHEN
-        Optional<PostEntity> createPostResponse = postService.create(postEntity);
+        CreatePostResponse createPostResponse = postService.create(postEntity);
 
         //THEN
-        createPostResponse.ifPresent(
-                cpr -> {
-                    assertNotNull(cpr);
-                    assertEquals(1L, cpr.getId());
-                });
-
+        assertNotNull(createPostResponse);
+        assertEquals(1L, createPostResponse.getId());
         verify(postRepository, times(1)).save(any(PostEntity.class));
-
     }
+
 }

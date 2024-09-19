@@ -23,5 +23,4 @@ public class PostBaseModel {
         return new PostEntity(title, text, 0);
     }
 
-
 }
