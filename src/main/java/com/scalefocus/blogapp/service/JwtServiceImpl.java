@@ -2,10 +2,6 @@ package com.scalefocus.blogapp.service;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.scalefocus.blogapp.entity.UserEntity;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -14,9 +10,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.time.Instant;
-import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -51,28 +45,5 @@ public class JwtServiceImpl implements JwtService {
                 .encode(parameters)
                 .getTokenValue();
     }
-
-    @Override
-    public String getUsernameFromToken(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+    
 }
