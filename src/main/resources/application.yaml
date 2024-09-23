@@ -17,3 +17,6 @@ spring:
     init:
       mode: always
       data-locations: classpath:initial-bootstrap.sql
+auth:
+  secret-key: 4e4ec0bb2dd33dfff9ac712f78eeb5650ae8aa69eff62f057faa2b72a4bed721
+  issuer: BlogApp

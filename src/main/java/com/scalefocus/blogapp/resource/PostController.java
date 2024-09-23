@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/posts")
+@RequestMapping(value = "api/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -21,6 +21,7 @@ public class PostController {
     @Operation(summary = "Create a new blog post",
             description = "This endpoint allows you to create a new blog post. You must provide the title, text.")
     public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+
         return postService
                 .create(createPostRequest.toEntity())
                 .map(pe -> ResponseEntity
@@ -55,6 +56,13 @@ public class PostController {
     public List<GetPostsByTagResponse> getPostsByTag(@PathVariable String tag) {
 
         return postService.getAllByTag(tag);
+
+    }
+
+    @GetMapping("/user")
+    public List<GetPostsByUserResponse> getPostsByUser() {
+
+        return postService.getAllByUser();
 
     }
 
