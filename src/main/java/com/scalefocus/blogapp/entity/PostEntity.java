@@ -21,7 +21,7 @@ public class PostEntity extends BaseEntity {
     private String text;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
