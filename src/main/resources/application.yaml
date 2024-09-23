@@ -2,21 +2,20 @@ spring:
   application:
     name: BlogApp
   datasource:
-    url: jdbc:h2:mem:blogappdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3306/blogappdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
   h2:
     console:
       enabled: true
   jpa:
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:initial-bootstrap.sql
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
 auth:
   secret-key: 4e4ec0bb2dd33dfff9ac712f78eeb5650ae8aa69eff62f057faa2b72a4bed721
   issuer: BlogApp
