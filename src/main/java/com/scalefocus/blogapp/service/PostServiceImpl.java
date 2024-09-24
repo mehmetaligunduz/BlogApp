@@ -98,6 +98,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deleteById(Long id) {
+
+        Optional<PostEntity> postEntity = postRepository.findById(id);
+
+
+        if (postEntity.isEmpty()) {
+            return;
+        }
+
+        postEntity.get().setDeleted(true);
+
+        postRepository.save(postEntity.get());
+
+    }
+
+    @Override
     public List<GetPostsByTagResponse> getAllByTag(String tag) {
 
         Optional<TagEntity> tagEntity = tagRepository.findByTag(tag);
@@ -128,5 +144,20 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(id);
     }
 
+    @Override
+    public boolean isOwner(Long postId) {
+
+        Optional<PostEntity> byId = postRepository.findById(postId);
+
+        return byId.isPresent()
+                && byId
+                .get()
+                .getUser()
+                .getId()
+                .equals(AuthenticationHandler
+                        .getUser()
+                        .getId());
+
+    }
 
 }

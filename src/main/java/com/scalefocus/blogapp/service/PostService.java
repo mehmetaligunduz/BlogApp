@@ -22,4 +22,9 @@ public interface PostService {
     Optional<UpdatePostResponse> update(PostEntity postEntity, Long id);
 
     List<GetPostsByUserResponse> getAllByUser();
+
+    void deleteById(Long id);
+
+    boolean isOwner(Long postId);
 }
+

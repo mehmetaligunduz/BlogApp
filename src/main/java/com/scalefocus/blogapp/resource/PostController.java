@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,13 +42,22 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @Operation(summary = "Update an existing blog post",
-            description = " Allows you to update an existing blog post by its ID. You can modify fields like the title, text.")
+            description = "Allows you to update an existing blog post by its ID. You can modify fields like the title, text.")
     public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long postId) {
 
         return postService
                 .update(updatePostRequest.toEntity(), postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @DeleteMapping("/{postId}")
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
+    @Operation(summary = "Delete an existing blog post",
+            description = "Allows you to delete an existing blog post by its ID.")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        postService.deleteById(postId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{tag}")
