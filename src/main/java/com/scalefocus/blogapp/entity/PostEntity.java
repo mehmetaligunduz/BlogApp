@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @Entity
 @NoArgsConstructor
 @Table(name = "posts")
+@SQLRestriction("is_deleted = false")
 public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
@@ -19,6 +21,9 @@ public class PostEntity extends BaseEntity {
 
     @Column(nullable = false)
     private String text;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = Boolean.FALSE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
