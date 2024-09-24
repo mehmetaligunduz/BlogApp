@@ -2,10 +2,9 @@ spring:
   application:
     name: BlogApp
   datasource:
-    url: jdbc:mysql://localhost:3306/blogappdb
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/blogappdb
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_USER:root}
   h2:
     console:
       enabled: true
@@ -13,9 +12,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
 auth:
   secret-key: 4e4ec0bb2dd33dfff9ac712f78eeb5650ae8aa69eff62f057faa2b72a4bed721
   issuer: BlogApp
