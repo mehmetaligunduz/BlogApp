@@ -46,14 +46,18 @@ public class UserServiceImpl implements UserService {
                                 loginRequest.getPassword()));
 
         if (!authenticate.isAuthenticated()) {
+
             throw new UsernameNotFoundException("User not found");
+
         }
 
         final Optional<UserEntity> userEntity = userRepository
                 .findByUsername(loginRequest.getUsername());
 
         if (userEntity.isEmpty()) {
+
             throw new UsernameNotFoundException("User not found");
+
         }
 
         final String token = jwtService.generateToken(userEntity.get());
@@ -63,7 +67,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
+
         return userRepository.findByUsername(username);
+
     }
 
 

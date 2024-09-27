@@ -36,7 +36,7 @@ public class PostController {
     @GetMapping
     @Operation(summary = "Retrieve all blog posts",
             description = "Returns a list of all blog posts, including summaries of each post. Optional query parameters allow filtering by category, tag")
-    public List<GetPostsResponse> getPosts() {
+    public List<PostWithSummaryTextResponse> getPosts() {
         return postService.getAll();
     }
 
@@ -70,7 +70,7 @@ public class PostController {
     }
 
     @GetMapping("/user")
-    public List<GetPostsByUserResponse> getPostsByUser() {
+    public List<PostWithSummaryTextResponse> getPostsByUser() {
 
         return postService.getAllByUser();
 
