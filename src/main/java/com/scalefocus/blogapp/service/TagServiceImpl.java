@@ -7,6 +7,7 @@ import com.scalefocus.blogapp.model.AddTagResponse;
 import com.scalefocus.blogapp.model.DeleteTagResponse;
 import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
@@ -58,6 +60,8 @@ public class TagServiceImpl implements TagService {
 
         final Optional<PostEntity> taggedPost = postService.create(getPost);
 
+        log.info("Post tagged - tag(s): {}", tags.stream().map(TagEntity::getTag).toList());
+
         return taggedPost.map(TagMapper.INSTANCE::addTagPostToModel);
 
     }
@@ -80,6 +84,8 @@ public class TagServiceImpl implements TagService {
         post.get().setTags(tags);
 
         Optional<PostEntity> deletedTagPost = postService.create(post.get());
+
+        log.info("Tag deleted from post - tag: {}", tagEntity.getTag());
 
         return deletedTagPost.map(TagMapper.INSTANCE::deleteTagPostToModel);
 

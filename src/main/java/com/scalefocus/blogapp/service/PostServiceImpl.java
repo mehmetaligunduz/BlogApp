@@ -11,6 +11,7 @@ import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -33,9 +35,13 @@ public class PostServiceImpl implements PostService {
 
         postEntity.setUser(AuthenticationHandler.getUser());
 
-        return Optional
+        Optional<PostEntity> savedPost = Optional
                 .of(postRepository
                         .save(postEntity));
+
+        log.info("Post created: {}", savedPost.get().getId());
+
+        return savedPost;
     }
 
     @Override
@@ -92,6 +98,8 @@ public class PostServiceImpl implements PostService {
         postEntity.get().setDeleted(true);
 
         postRepository.save(postEntity.get());
+
+        log.info("Post deleted: {}", postEntity.get().getId());
 
     }
 

@@ -7,6 +7,7 @@ import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.model.RegisterResponse;
 import com.scalefocus.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -28,11 +30,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public RegisterResponse register(UserEntity userEntity) {
 
-        UserEntity save = userRepository.save(userEntity);
+        UserEntity savedUser = userRepository.save(userEntity);
 
-        AuthenticationHandler.setUser(save);
+        AuthenticationHandler.setUser(savedUser);
 
-        return new RegisterResponse(jwtService.generateToken(save));
+        log.info("User registered: {}", savedUser.getDisplayName());
+
+        return new RegisterResponse(jwtService.generateToken(savedUser));
 
     }
 
@@ -44,6 +48,8 @@ public class UserServiceImpl implements UserService {
                         new UsernamePasswordAuthenticationToken(
                                 loginRequest.getUsername(),
                                 loginRequest.getPassword()));
+
+        log.info("Authenticated user: {}", authenticate.getPrincipal());
 
         if (!authenticate.isAuthenticated()) {
 
@@ -61,6 +67,8 @@ public class UserServiceImpl implements UserService {
         }
 
         final String token = jwtService.generateToken(userEntity.get());
+
+        log.info("Generated token: {}", token);
 
         return new LoginResponse(token);
     }
