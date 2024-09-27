@@ -3,7 +3,7 @@ package com.scalefocus.blogapp;
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.GetPostsResponse;
+import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
@@ -77,7 +77,7 @@ class PostServiceUnitTest {
         when(postRepository.findAll()).thenReturn(postEntityList);
 
         //WHEN
-        List<GetPostsResponse> allPosts = postService.getAll();
+        List<PostWithSummaryTextResponse> allPosts = postService.getAll();
 
         //THEN
         assertNotNull(allPosts);
