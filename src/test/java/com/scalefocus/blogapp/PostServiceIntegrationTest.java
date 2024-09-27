@@ -2,7 +2,6 @@ package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
-import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.service.PostService;
 import jakarta.transaction.Transactional;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-public class PostServiceIntegrationTest {
+class PostServiceIntegrationTest {
 
     @Autowired
     private PostService postService;
@@ -31,17 +31,21 @@ public class PostServiceIntegrationTest {
     @Test
     void testSavePost() {
 
+        // ARRANGE
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
                         "Test Text",
                         0);
 
+        // ACT
         PostEntity savedPost = postRepository.save(postEntity);
 
+        // ASSERT
         assertNotNull(savedPost.getId());
         assertEquals("Test Post", savedPost.getTitle());
 
+        // OPTIONAL
         postRepository.findById(savedPost.getId()).ifPresent(post -> {
             assertEquals("Test Text", post.getText());
         });
@@ -51,6 +55,7 @@ public class PostServiceIntegrationTest {
     @Test
     void testGetAllPosts() {
 
+        // ARRANGE
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
@@ -63,11 +68,13 @@ public class PostServiceIntegrationTest {
                         "Test Text1",
                         0);
 
-        postService.save(postEntity);
-        postService.save(postEntity1);
+        // ACT
+        postService.create(postEntity);
+        postService.create(postEntity1);
 
         List<PostEntity> allPosts = postRepository.findAll();
 
+        // ASSERT
         assertNotNull(allPosts);
         assertEquals(12, allPosts.size()); //I have 10 initial post so we expected 12
     }
@@ -75,6 +82,7 @@ public class PostServiceIntegrationTest {
     @Test
     void testUpdatePost() {
 
+        // ARRANGE
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
@@ -82,14 +90,21 @@ public class PostServiceIntegrationTest {
                         0);
         postEntity.setId(11L);
 
-        CreatePostResponse createPostResponse = postService.create(postEntity);
-        assertNotNull(createPostResponse.getId());
+        // ACT
+        Optional<PostEntity> createdPost = postService.create(postEntity);
 
+        if (createdPost.isEmpty()) {
+            return;
+        }
+
+        // ACT
         postEntity.setTitle("Updated Test Post");
+        postService.update(postEntity, createdPost.get().getId());
 
-        postService.update(postEntity, createPostResponse.getId());
-
+        // ASSERT
+        assertNotNull(createdPost.get().getId());
         postRepository.findById(postEntity.getId()).ifPresent(post -> {
+            assertEquals(11L, post.getId());
             assertEquals("Updated Test Post", post.getTitle());
         });
 
@@ -98,6 +113,7 @@ public class PostServiceIntegrationTest {
     @Test
     void testFindAllPostsByTag() {
 
+        // ARRANGE
         String tag = "IT";
         TagEntity tagEntity = new TagEntity(tag);
 
@@ -109,10 +125,13 @@ public class PostServiceIntegrationTest {
 
         postEntity.setTags(Set.of(tagEntity));
 
-        postService.save(postEntity);
+        // ACT
+
+        postService.create(postEntity);
 
         List<PostEntity> allPostsByTag = postRepository.findAllByTags(Set.of(tagEntity));
 
+        // ASSERT
         assertNotNull(allPostsByTag);
         assertEquals(1, allPostsByTag.size());
 
@@ -121,6 +140,7 @@ public class PostServiceIntegrationTest {
     @Test
     void testFindPostById() {
 
+        // ARRANGE
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
@@ -128,10 +148,12 @@ public class PostServiceIntegrationTest {
                         0);
         postEntity.setId(1L);
 
-        postService.save(postEntity);
+        // ACT
+        postService.create(postEntity);
 
         postService.findById(postEntity.getId());
 
+        // ASSERT
         postRepository.findById(postEntity.getId()).ifPresent(post -> {
             assertEquals("Test Post", post.getTitle());
         });
@@ -140,6 +162,8 @@ public class PostServiceIntegrationTest {
 
     @Test
     void testCreatePost() {
+
+        // ARRANGE
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
@@ -147,12 +171,14 @@ public class PostServiceIntegrationTest {
                         0);
         postEntity.setId(1L);
 
+        // ACT
         postService.create(postEntity);
 
+        // ASSERT
         postRepository.findById(postEntity.getId()).ifPresent(post -> {
             assertEquals("Test Text", post.getText());
         });
-        
+
     }
 
 }

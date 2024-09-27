@@ -2,10 +2,12 @@ package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
+import com.scalefocus.blogapp.mapper.TagMapper;
 import com.scalefocus.blogapp.model.AddTagResponse;
 import com.scalefocus.blogapp.model.DeleteTagResponse;
 import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
@@ -22,12 +25,14 @@ public class TagServiceImpl implements TagService {
     private final PostService postService;
 
     @Override
-    public AddTagResponse addTag(Set<TagEntity> tags, Long postId) {
+    public Optional<AddTagResponse> addTag(Set<TagEntity> tags, Long postId) {
 
         Optional<PostEntity> post = postService.findById(postId);
 
         if (post.isEmpty()) {
-            return null;
+
+            return Optional.empty();
+
         }
 
         Set<TagEntity> tagEntities = tags.stream()
@@ -40,32 +45,36 @@ public class TagServiceImpl implements TagService {
                 )
                 .collect(Collectors.toSet());
 
-        if (post.get().getTags() == null) {
-            post.get().setTags(tagEntities);
+
+        PostEntity getPost = post.get();
+
+        if (getPost.getTags() == null) {
+
+            getPost.setTags(tagEntities);
+
         } else {
-            post.get().getTags().addAll(tagEntities);
+
+            getPost.getTags().addAll(tagEntities);
+
         }
 
-        final PostEntity taggedPost = postService.save(post.get());
+        final Optional<PostEntity> taggedPost = postService.create(getPost);
 
-        return new AddTagResponse(
-                taggedPost.getTitle(),
-                taggedPost.getText(),
-                taggedPost
-                        .getTags()
-                        .stream()
-                        .map(TagEntity::getTag)
-                        .collect(Collectors.toSet())
-        );
+        log.info("Post tagged - tag(s): {}", tags.stream().map(TagEntity::getTag).toList());
+
+        return taggedPost.map(TagMapper.INSTANCE::addTagPostToModel);
+
     }
 
     @Override
-    public DeleteTagResponse deleteTag(TagEntity tagEntity, Long postId) {
+    public Optional<DeleteTagResponse> deleteTag(TagEntity tagEntity, Long postId) {
 
         Optional<PostEntity> post = postService.findById(postId);
 
         if (post.isEmpty()) {
-            return null;
+
+            return Optional.empty();
+
         }
 
         Set<TagEntity> tags = new HashSet<>(post.get().getTags());
@@ -73,17 +82,12 @@ public class TagServiceImpl implements TagService {
         tags.remove(tagEntity);
 
         post.get().setTags(tags);
-        final PostEntity deletedTagPost = postService.save(post.get());
 
-        return new DeleteTagResponse(
-                deletedTagPost.getTitle(),
-                deletedTagPost.getText(),
-                deletedTagPost
-                        .getTags()
-                        .stream()
-                        .map(TagEntity::getTag)
-                        .collect(Collectors.toSet())
-        );
+        Optional<PostEntity> deletedTagPost = postService.create(post.get());
+
+        log.info("Tag deleted from post - tag: {}", tagEntity.getTag());
+
+        return deletedTagPost.map(TagMapper.INSTANCE::deleteTagPostToModel);
 
     }
 

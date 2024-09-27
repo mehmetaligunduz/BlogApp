@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class GetPostsByTagResponse extends TagBaseModel {
 
-    public GetPostsByTagResponse(String title, String text, Set<String> tags) {
+    public GetPostsByTagResponse(String title, String text, Set<TagsResponse> tags) {
 
         super(title, text, tags);
 

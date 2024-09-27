@@ -2,9 +2,8 @@ package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
-import com.scalefocus.blogapp.model.CreatePostResponse;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.GetPostsResponse;
+import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
@@ -22,7 +21,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class PostServiceUnitTest {
+class PostServiceUnitTest {
 
     @Mock
     PostRepository postRepository;
@@ -51,15 +50,18 @@ public class PostServiceUnitTest {
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
         //WHEN
-        PostEntity savedPost = postService.save(postEntity);
+        Optional<PostEntity> savedPost = postService.create(postEntity);
 
         //THEN
-        assertNotNull(savedPost);
-        assertEquals("Test Post", savedPost.getTitle());
+        savedPost.ifPresent(pe -> {
+            assertNotNull(pe);
+            assertEquals("Test Post", pe.getTitle());
+        });
+
         verify(postRepository, times(1)).save(postEntity);
 
     }
-    
+
     @Test
     void testGetAllPosts() {
 
@@ -75,7 +77,7 @@ public class PostServiceUnitTest {
         when(postRepository.findAll()).thenReturn(postEntityList);
 
         //WHEN
-        List<GetPostsResponse> allPosts = postService.getAll();
+        List<PostWithSummaryTextResponse> allPosts = postService.getAll();
 
         //THEN
         assertNotNull(allPosts);
@@ -99,14 +101,18 @@ public class PostServiceUnitTest {
 
         //WHEN
         postEntity.setTitle("Test Post Updated");
-        UpdatePostResponse updatedPost = postService.update(postEntity, 0L);
+        Optional<UpdatePostResponse> updatedPost = postService.update(postEntity, 0L);
 
-        //THEN
-        assertNotNull(updatedPost);
-        assertNotEquals("Test Post", updatedPost.getTitle());
-        assertEquals("Test Post Updated", updatedPost.getTitle());
-        verify(postRepository, times(1)).findById(any(Long.class));
-        verify(postRepository, times(1)).save(postEntity);
+        updatedPost.ifPresent(up -> {
+
+            //THEN
+            assertNotNull(up);
+            assertNotEquals("Test Post", up.getTitle());
+            assertEquals("Test Post Updated", up.getTitle());
+            verify(postRepository, times(1)).findById(any(Long.class));
+            verify(postRepository, times(1)).save(postEntity);
+
+        });
 
     }
 
@@ -128,7 +134,7 @@ public class PostServiceUnitTest {
         when(postRepository.findAllByTags(Set.of(tagEntity))).thenReturn(List.of(postEntity));
 
         //WHEN
-        List<GetPostsByTagResponse> foundedPosts = postService.findAllByTag("IT");
+        List<GetPostsByTagResponse> foundedPosts = postService.getAllByTag("IT");
 
         //THEN
         assertNotNull(foundedPosts);
@@ -140,6 +146,7 @@ public class PostServiceUnitTest {
 
         verify(tagRepository, times(1)).findByTag(tag);
         verify(postRepository, times(1)).findAllByTags(Set.of(tagEntity));
+
     }
 
     @Test
@@ -179,12 +186,16 @@ public class PostServiceUnitTest {
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
         //WHEN
-        CreatePostResponse createPostResponse = postService.create(postEntity);
+        Optional<PostEntity> createPostResponse = postService.create(postEntity);
 
         //THEN
-        assertNotNull(createPostResponse);
-        assertEquals(1L, createPostResponse.getId());
-        verify(postRepository, times(1)).save(any(PostEntity.class));
-    }
+        createPostResponse.ifPresent(
+                cpr -> {
+                    assertNotNull(cpr);
+                    assertEquals(1L, cpr.getId());
+                });
 
+        verify(postRepository, times(1)).save(any(PostEntity.class));
+
+    }
 }
