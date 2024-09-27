@@ -1,5 +1,6 @@
 package com.scalefocus.blogapp.model.base;
 
+import com.scalefocus.blogapp.model.TagsResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,6 @@ public class TagBaseModel {
 
     private String text;
 
-    private Set<String> tags;
+    private Set<TagsResponse> tags;
 
 }

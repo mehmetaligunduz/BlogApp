@@ -2,6 +2,7 @@ package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
+import com.scalefocus.blogapp.mapper.TagMapper;
 import com.scalefocus.blogapp.model.AddTagResponse;
 import com.scalefocus.blogapp.model.DeleteTagResponse;
 import com.scalefocus.blogapp.repository.TagRepository;
@@ -52,21 +53,12 @@ public class TagServiceImpl implements TagService {
         } else {
 
             getPost.getTags().addAll(tagEntities);
-            
+
         }
 
-        Optional<PostEntity> taggedPost = postService.create(getPost);
+        final Optional<PostEntity> taggedPost = postService.create(getPost);
 
-        return taggedPost.map(postEntity ->
-                new AddTagResponse(
-                        postEntity.getTitle(),
-                        postEntity.getText(),
-                        postEntity
-                                .getTags()
-                                .stream()
-                                .map(TagEntity::getTag)
-                                .collect(Collectors.toSet())
-                ));
+        return taggedPost.map(TagMapper.INSTANCE::addTagPostToModel);
 
     }
 
@@ -89,16 +81,7 @@ public class TagServiceImpl implements TagService {
 
         Optional<PostEntity> deletedTagPost = postService.create(post.get());
 
-        return deletedTagPost.map(postEntity ->
-                new DeleteTagResponse(
-                        postEntity.getTitle(),
-                        postEntity.getText(),
-                        postEntity
-                                .getTags()
-                                .stream()
-                                .map(TagEntity::getTag)
-                                .collect(Collectors.toSet())
-                ));
+        return deletedTagPost.map(TagMapper.INSTANCE::deleteTagPostToModel);
 
     }
 

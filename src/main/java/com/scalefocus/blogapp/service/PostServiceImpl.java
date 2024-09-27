@@ -4,9 +4,9 @@ import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.handler.AuthenticationHandler;
+import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.GetPostsByUserResponse;
-import com.scalefocus.blogapp.model.GetPostsResponse;
+import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
@@ -17,21 +17,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-
-    public static final String ELLIPSIS = "...";
 
     private final PostRepository postRepository;
 
     private final TagRepository tagRepository;
 
     private final UserService userService;
-
-    private final JwtService jwtService;
 
     @Override
     public Optional<PostEntity> create(PostEntity postEntity) {
@@ -44,18 +39,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<GetPostsResponse> getAll() {
+    public List<PostWithSummaryTextResponse> getAll() {
 
         final List<PostEntity> allPosts = postRepository.findAll();
 
-        return allPosts.stream()
-                .map(post -> new GetPostsResponse(
-                        post.getTitle(),
-                        post.getText()
-                                .substring(0, post.getText().length() / 2)
-                                .trim()
-                                .concat(ELLIPSIS)))
-                .toList();
+        return PostMapper.INSTANCE.allPostsEntityToModel(allPosts);
     }
 
     @Override
@@ -69,13 +57,13 @@ public class PostServiceImpl implements PostService {
 
                     final PostEntity updatedPost = postRepository.save(post);
 
-                    return new UpdatePostResponse(updatedPost.getTitle(), updatedPost.getText());
-
+                    return PostMapper.INSTANCE.updatePostEntityToModel(updatedPost);
                 });
+
     }
 
     @Override
-    public List<GetPostsByUserResponse> getAllByUser() {
+    public List<PostWithSummaryTextResponse> getAllByUser() {
 
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -87,13 +75,7 @@ public class PostServiceImpl implements PostService {
 
         final List<PostEntity> allPostsByUser = postRepository.findAllByUser(user.get());
 
-        return allPostsByUser.stream().map(post -> new GetPostsByUserResponse(
-                post.getTitle(),
-                post.getText()
-                        .substring(0, post.getText().length() / 2)
-                        .trim()
-                        .concat(ELLIPSIS)
-        )).toList();
+        return PostMapper.INSTANCE.allPostEntityToModel(allPostsByUser);
 
     }
 
@@ -122,20 +104,9 @@ public class PostServiceImpl implements PostService {
             return List.of();
         }
 
-        List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
+        final List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
 
-        return allByTag.stream().map(post ->
-                new GetPostsByTagResponse(
-                        post.getTitle(),
-                        post.getText()
-                                .substring(0, post.getText().length() / 2)
-                                .trim()
-                                .concat(ELLIPSIS),
-                        post.getTags()
-                                .stream()
-                                .map(TagEntity::getTag)
-                                .collect(Collectors.toSet())
-                )).toList();
+        return PostMapper.INSTANCE.postEntityToModelWithTags(allByTag);
 
     }
 
