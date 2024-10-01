@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class TagController {
 
     private final TagService tagService;
 
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
     @PostMapping("/posts/{postId}")
     @Operation(
             summary = "Add tag(s) to a post",
@@ -33,6 +35,7 @@ public class TagController {
                         .build());
     }
 
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
     @DeleteMapping("/posts/{postId}")
     @Operation(
             summary = "Remove a tag from a post",
