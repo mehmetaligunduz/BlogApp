@@ -37,10 +37,13 @@ public class PostController {
     @Operation(summary = "Retrieve all blog posts",
             description = "Returns a list of all blog posts, including summaries of each post. Optional query parameters allow filtering by category, tag")
     public List<PostWithSummaryTextResponse> getPosts() {
+
         return postService.getAll();
+
     }
 
     @PutMapping("/{postId}")
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
     @Operation(summary = "Update an existing blog post",
             description = "Allows you to update an existing blog post by its ID. You can modify fields like the title, text.")
     public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long postId) {
@@ -49,6 +52,7 @@ public class PostController {
                 .update(updatePostRequest.toEntity(), postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
+
     }
 
     @DeleteMapping("/{postId}")
@@ -56,9 +60,12 @@ public class PostController {
     @Operation(summary = "Delete an existing blog post",
             description = "Allows you to delete an existing blog post by its ID.")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+
         postService.deleteById(postId);
         return ResponseEntity.noContent().build();
+
     }
+
 
     @GetMapping("/{tag}")
     @Operation(summary = "Retrieve all blog posts by tag",
