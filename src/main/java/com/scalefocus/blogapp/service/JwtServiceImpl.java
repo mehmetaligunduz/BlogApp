@@ -32,6 +32,7 @@ public class JwtServiceImpl implements JwtService {
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(1800))
                 .subject(user.getUsername())
+                .claim("id", user.getId())
                 .build();
 
         final NimbusJwtEncoder nimbusJwtEncoder =
@@ -62,6 +63,15 @@ public class JwtServiceImpl implements JwtService {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username));
 
+    }
+
+    public String extractUserId(String token) throws ParseException {
+
+        return JWTParser
+                .parse(token)
+                .getJWTClaimsSet()
+                .getClaim("id")
+                .toString();
     }
 
 }

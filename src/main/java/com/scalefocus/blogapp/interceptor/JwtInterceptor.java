@@ -2,15 +2,16 @@ package com.scalefocus.blogapp.interceptor;
 
 import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.service.JwtServiceImpl;
-import com.scalefocus.blogapp.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.text.ParseException;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtInterceptor implements HandlerInterceptor {
@@ -18,8 +19,6 @@ public class JwtInterceptor implements HandlerInterceptor {
     private final JwtServiceImpl jwtService;
 
     private final SessionHandler sessionHandler;
-
-    private final UserService userService;
 
     private static final String TOKEN_PREFIX = "Bearer ";
 
@@ -38,18 +37,17 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         final String jwt = authorization.substring(TOKEN_PREFIX.length());
         final String username = jwtService.extractUsername(jwt);
+        final String userId = jwtService.extractUserId(jwt);
 
         if (Boolean.FALSE.equals(jwtService.validateToken(jwt, username))) {
 
             return unauthorized(response);
-            
+
         }
 
-        userService.findByUsername(username).ifPresent(u -> {
-            sessionHandler.setUsername(u.getUsername());
-            sessionHandler.setId(u.getId());
-        });
-
+        sessionHandler.setUsername(username);
+        sessionHandler.setId(Long.valueOf(userId));
+        
         return true;
 
     }
