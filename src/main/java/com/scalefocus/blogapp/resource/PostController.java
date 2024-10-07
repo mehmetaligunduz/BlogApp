@@ -1,5 +1,6 @@
 package com.scalefocus.blogapp.resource;
 
+import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,10 +19,14 @@ public class PostController {
 
     private final PostService postService;
 
+    private final SessionHandler sessionHandler;
+
     @PostMapping
     @Operation(summary = "Create a new blog post",
             description = "This endpoint allows you to create a new blog post. You must provide the title, text.")
     public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+
+        sessionHandler.getUsername();
 
         return postService
                 .create(createPostRequest.toEntity())

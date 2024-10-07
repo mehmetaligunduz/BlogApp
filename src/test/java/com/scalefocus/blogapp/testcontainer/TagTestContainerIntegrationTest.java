@@ -1,8 +1,10 @@
 package com.scalefocus.blogapp.testcontainer;
 
-import com.scalefocus.blogapp.entity.UserEntity;
+import com.scalefocus.blogapp.model.LoginRequest;
+import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.service.JwtService;
 import com.scalefocus.blogapp.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,6 +33,8 @@ public class TagTestContainerIntegrationTest {
     @Autowired
     private UserService userService;
 
+    private String token;
+
     @Container
     private static final MySQLContainer<?> mysqlContainer =
             new MySQLContainer<>("mysql:latest")
@@ -49,43 +51,36 @@ public class TagTestContainerIntegrationTest {
 
     }
 
+    @BeforeEach
+    void login() {
+
+        LoginResponse loginResponse = userService.login(new LoginRequest("mgunduz", "123456"));
+        token = loginResponse.getToken();
+
+    }
+
+
     @Test
     void testAddTagToAPost() throws Exception {
 
-        Optional<UserEntity> userEntity = userService.findByUsername("mgunduz");
-
-        if (userEntity.isEmpty()) {
-            return;
-        }
-
-        String token = jwtService.generateToken(userEntity.get());
-
         String requestBody = """
                     {
-                         "tags":["Java"]
+                         "tags":["IT", "Development", "Java"]
                     }
                 """;
 
-        long postId = 1L;
+        long postId = 2L;
 
-        mockMvc.perform(post("/api/v1/tag-management/" + postId)
+        mockMvc.perform(post("/api/v1/tag-management/posts/" + postId)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isOk());
+                .andExpect(status().is2xxSuccessful());
 
     }
 
     @Test
     void testRemoveTagFromAPost() throws Exception {
-
-        Optional<UserEntity> userEntity = userService.findByUsername("mgunduz");
-
-        if (userEntity.isEmpty()) {
-            return;
-        }
-
-        String token = jwtService.generateToken(userEntity.get());
 
         String requestBody = """
                    {
@@ -95,11 +90,11 @@ public class TagTestContainerIntegrationTest {
 
         long postId = 1L;
 
-        mockMvc.perform(delete("/api/v1/tag-management/" + postId)
+        mockMvc.perform(delete("/api/v1/tag-management/posts&" + postId)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
-                .andExpect(status().isOk());
+                .andExpect(status().is2xxSuccessful());
 
     }
 

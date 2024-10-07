@@ -1,7 +1,6 @@
 package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.UserEntity;
-import com.scalefocus.blogapp.handler.AuthenticationHandler;
 import com.scalefocus.blogapp.model.LoginRequest;
 import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.model.RegisterResponse;
@@ -31,8 +30,7 @@ public class UserServiceImpl implements UserService {
     public RegisterResponse register(UserEntity userEntity) {
 
         UserEntity savedUser = userRepository.save(userEntity);
-
-        AuthenticationHandler.setUser(savedUser);
+        
 
         log.info("User registered: {}", savedUser.getDisplayName());
 

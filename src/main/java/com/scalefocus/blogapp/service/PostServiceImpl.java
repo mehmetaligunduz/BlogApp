@@ -3,7 +3,7 @@ package com.scalefocus.blogapp.service;
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.entity.UserEntity;
-import com.scalefocus.blogapp.handler.AuthenticationHandler;
+import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
@@ -30,10 +30,12 @@ public class PostServiceImpl implements PostService {
 
     private final UserService userService;
 
+    private final SessionHandler sessionHandler;
+
     @Override
     public Optional<PostEntity> create(PostEntity postEntity) {
 
-        postEntity.setUser(AuthenticationHandler.getUser());
+        postEntity.setUser(new UserEntity(sessionHandler.getId()));
 
         Optional<PostEntity> savedPost = Optional
                 .of(postRepository
@@ -126,15 +128,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public boolean isOwner(Long postId) {
 
-        Optional<PostEntity> byId = postRepository.findById(postId);
+        Optional<PostEntity> post = postRepository.findById(postId);
 
-        return byId.isPresent()
-                && byId
+        return post.isPresent()
+                && post
                 .get()
                 .getUser()
                 .getId()
-                .equals(AuthenticationHandler
-                        .getUser()
+                .equals(sessionHandler
                         .getId());
 
     }
