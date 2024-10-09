@@ -37,4 +37,9 @@ public class UserEntity extends BaseEntity {
         this.displayName = displayName;
 
     }
+
+    public UserEntity(Long id) {
+        super(id);
+    }
+
 }

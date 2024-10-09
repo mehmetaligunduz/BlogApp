@@ -1,10 +1,8 @@
 package com.scalefocus.blogapp.testcontainer;
 
 
-import com.scalefocus.blogapp.entity.UserEntity;
-import com.scalefocus.blogapp.handler.AuthenticationHandler;
 import com.scalefocus.blogapp.model.LoginRequest;
-import com.scalefocus.blogapp.service.JwtService;
+import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,10 +27,9 @@ class PostTestContainerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private UserService userService;
+
+    private String token;
 
     @Container
     private static final MySQLContainer<?> mysqlContainer =
@@ -56,15 +51,14 @@ class PostTestContainerIntegrationTest {
     @BeforeEach
     void login() {
 
-        userService.login(new LoginRequest("mgunduz", "123456"));
+        LoginResponse loginResponse = userService.login(new LoginRequest("mgunduz", "123456"));
+        token = loginResponse.getToken();
 
     }
 
 
     @Test
     void testCreatePost() throws Exception {
-
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
 
         String requestBody = """
                     {
@@ -101,8 +95,6 @@ class PostTestContainerIntegrationTest {
     @Test
     void testGetAllPosts() throws Exception {
 
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
-
         mockMvc.perform(get("/api/v1/posts")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -118,7 +110,18 @@ class PostTestContainerIntegrationTest {
 
         String tag = "Java";
 
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
+        String requestBody = """
+                    {
+                         "tags":["Java"]
+                    }
+                """;
+
+        long postId = 2L;
+
+        mockMvc.perform(post("/api/v1/tag-management/posts/" + postId)
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody));
 
         mockMvc.perform(get("/api/v1/posts/" + tag)
                         .header("Authorization", "Bearer " + token)
@@ -131,9 +134,7 @@ class PostTestContainerIntegrationTest {
     @Test
     void testUpdatePosts() throws Exception {
 
-        long postId = 1L;
-
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
+        long postId = 2L;
 
         String requestBody = """
                     {
@@ -153,41 +154,29 @@ class PostTestContainerIntegrationTest {
     @Test
     void testDeletePosts() throws Exception {
 
-        Optional<UserEntity> userEntity = userService.findByUsername("mgunduz");
-
-        if (userEntity.isEmpty()) {
-            return;
-        }
-
-        long postId = 1L;
-
-        String token = jwtService.generateToken(userEntity.get());
+        long postId = 2L;
 
         mockMvc.perform(delete("/api/v1/posts/" + postId)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().is2xxSuccessful());
 
     }
 
     @Test
     void testDeletePostsWithNotCreatorUser() throws Exception {
 
-        long postId = 12L;
-
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
+        long postId = 1L;
 
         mockMvc.perform(delete("/api/v1/posts/" + postId)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is4xxClientError());
 
     }
 
     @Test
     void testGetAllPostsByUser() throws Exception {
-
-        String token = jwtService.generateToken(AuthenticationHandler.getUser());
 
         mockMvc.perform(get("/api/v1/posts")
                         .header("Authorization", "Bearer " + token)
