@@ -27,8 +27,6 @@ public class PostServiceImpl implements PostService {
 
     private final TagRepository tagRepository;
 
-    private final UserService userService;
-
     private final SessionHandler sessionHandler;
 
     @Override
@@ -50,12 +48,14 @@ public class PostServiceImpl implements PostService {
 
         final List<PostEntity> allPosts = postRepository.findAll();
 
-        return PostMapper.INSTANCE.allPostsEntityToModel(allPosts);
+        return PostMapper
+                .INSTANCE
+                .allPostsEntityToModel(allPosts);
+
     }
 
     @Override
     public Optional<UpdatePostResponse> update(PostEntity postEntity, Long id) {
-
 
         return postRepository.findById(id)
                 .map(post -> {
@@ -64,7 +64,9 @@ public class PostServiceImpl implements PostService {
 
                     final PostEntity updatedPost = postRepository.save(post);
 
-                    return PostMapper.INSTANCE.updatePostEntityToModel(updatedPost);
+                    return PostMapper
+                            .INSTANCE
+                            .updatePostEntityToModel(updatedPost);
                 });
 
     }
@@ -72,9 +74,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostWithSummaryTextResponse> getAllByUser() {
 
-        final List<PostEntity> allPostsByUser = postRepository.findAllByUser_Username(sessionHandler.getUsername());
+        final List<PostEntity> allPostsByUser = postRepository
+                .findAllByUser_Username(sessionHandler.getUsername());
 
-        return PostMapper.INSTANCE.allPostEntityToModel(allPostsByUser);
+        return PostMapper
+                .INSTANCE
+                .allPostEntityToModel(allPostsByUser);
 
     }
 
@@ -107,13 +112,17 @@ public class PostServiceImpl implements PostService {
 
         final List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
 
-        return PostMapper.INSTANCE.postEntityToModelWithTags(allByTag);
+        return PostMapper
+                .INSTANCE
+                .postEntityToModelWithTags(allByTag);
 
     }
 
     @Override
     public Optional<PostEntity> findById(Long id) {
+
         return postRepository.findById(id);
+
     }
 
     @Override

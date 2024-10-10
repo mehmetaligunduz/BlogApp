@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public RegisterResponse register(UserEntity userEntity) {
 
         UserEntity savedUser = userRepository.save(userEntity);
-        
+
 
         log.info("User registered: {}", savedUser.getDisplayName());
 
@@ -70,13 +70,5 @@ public class UserServiceImpl implements UserService {
 
         return new LoginResponse(token);
     }
-
-    @Override
-    public Optional<UserEntity> findByUsername(String username) {
-
-        return userRepository.findByUsername(username);
-
-    }
-
 
 }

@@ -26,8 +26,6 @@ public class PostController {
             description = "This endpoint allows you to create a new blog post. You must provide the title, text.")
     public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
 
-        sessionHandler.getUsername();
-
         return postService
                 .create(createPostRequest.toEntity())
                 .map(pe -> ResponseEntity
