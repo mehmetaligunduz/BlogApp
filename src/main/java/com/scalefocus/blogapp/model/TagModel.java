@@ -13,8 +13,17 @@ public class TagModel {
 
     private String tag;
 
+    private int version;
+
     public TagModel(String tag) {
         this.tag = tag;
+        this.version = 0;
+    }
+
+    public TagModel(Long id, String tag) {
+        this.tag = tag;
+        this.version = 0;
     }
 
 }
+

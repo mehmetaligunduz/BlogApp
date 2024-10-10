@@ -1,6 +1,5 @@
 package com.scalefocus.blogapp.model.base;
 
-import com.scalefocus.blogapp.entity.PostEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,10 +17,5 @@ public class PostBaseModel {
 
     @NotNull
     private String text;
-
-    public PostEntity toEntity() {
-        return new PostEntity(title, text);
-    }
-
 
 }

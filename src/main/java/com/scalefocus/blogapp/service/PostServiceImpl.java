@@ -4,10 +4,7 @@ import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.mapper.PostMapper;
-import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.PostModel;
-import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
-import com.scalefocus.blogapp.model.UpdatePostResponse;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +23,9 @@ public class PostServiceImpl implements PostService {
     private final SessionHandler sessionHandler;
 
     @Override
-    public Optional<PostModel> create(PostEntity postEntity) {
+    public Optional<PostModel> create(PostModel postModel) {
+
+        PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(postModel);
 
         postEntity.setUser(new UserEntity(sessionHandler.getId()));
 
@@ -51,12 +50,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<UpdatePostResponse> update(PostEntity postEntity, Long id) {
+    public Optional<UpdatePostResponse> update(UpdatePostRequest updatePostRequest, Long id) {
 
         return postRepository.findById(id)
                 .map(post -> {
-                    post.setTitle(postEntity.getTitle());
-                    post.setText(postEntity.getText());
+                    post.setTitle(updatePostRequest.getTitle());
+                    post.setText(updatePostRequest.getText());
 
                     final PostEntity updatedPost = postRepository.save(post);
 

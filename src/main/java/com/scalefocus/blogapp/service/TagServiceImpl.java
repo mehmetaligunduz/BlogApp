@@ -46,8 +46,9 @@ public class TagServiceImpl implements TagService {
         PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(post.get());
         postEntity.getTags().addAll(tagEntity);
 
+        PostModel mapperPostModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
 
-        Optional<PostModel> postModel = postService.create(postEntity);
+        Optional<PostModel> postModel = postService.create(mapperPostModel);
 
         log.info("Post tagged - tag(s): {}", addTagRequest.getTags());
 
@@ -71,9 +72,8 @@ public class TagServiceImpl implements TagService {
 
         post.get().getTags().remove(tagModel);
 
-        final PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(post.get());
 
-        Optional<PostModel> savedPostEntity = postService.create(postEntity);
+        Optional<PostModel> savedPostEntity = postService.create(post.get());
 
         return savedPostEntity
                 .map(TagMapper

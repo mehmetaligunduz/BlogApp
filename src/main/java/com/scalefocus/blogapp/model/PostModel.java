@@ -19,10 +19,14 @@ public class PostModel {
 
     private String text;
 
-    private boolean isDeleted = Boolean.FALSE;
+    private boolean isDeleted;
 
     private Set<TagModel> tags;
 
     private int version;
 
+    public PostModel(String title, String text) {
+        this.title = title;
+        this.text = text;
+    }
 }
