@@ -3,6 +3,7 @@ package com.scalefocus.blogapp.service;
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.model.LoginRequest;
 import com.scalefocus.blogapp.model.LoginResponse;
+import com.scalefocus.blogapp.model.RegisterRequest;
 import com.scalefocus.blogapp.model.RegisterResponse;
 import com.scalefocus.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,11 +29,17 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public RegisterResponse register(UserEntity userEntity) {
+    public RegisterResponse register(RegisterRequest registerRequest) {
+
+
+        UserEntity userEntity = new UserEntity(
+                registerRequest.getUsername(),
+                new BCryptPasswordEncoder().encode(registerRequest.getPassword()),
+                registerRequest.getDisplayName()
+        );
 
         UserEntity savedUser = userRepository.save(userEntity);
-
-
+        
         log.info("User registered: {}", savedUser.getDisplayName());
 
         return new RegisterResponse(jwtService.generateToken(savedUser));

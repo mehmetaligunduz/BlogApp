@@ -20,7 +20,7 @@ public class PostBaseModel {
     private String text;
 
     public PostEntity toEntity() {
-        return new PostEntity(title, text, 0);
+        return new PostEntity(title, text);
     }
 
 

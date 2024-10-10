@@ -29,9 +29,7 @@ public class UserController {
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity
                 .ok(userService
-                        .register(registerRequest
-                                .toEntity()
-                        )
+                        .register(registerRequest)
                 );
     }
 
