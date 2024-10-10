@@ -58,13 +58,6 @@ public class JwtServiceImpl implements JwtService {
                 .getSubject();
     }
 
-    public Boolean validateToken(String token, String username) throws ParseException {
-
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username));
-
-    }
-
     public String extractUserId(String token) throws ParseException {
 
         return JWTParser

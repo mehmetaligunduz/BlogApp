@@ -39,15 +39,9 @@ public class JwtInterceptor implements HandlerInterceptor {
         final String username = jwtService.extractUsername(jwt);
         final String userId = jwtService.extractUserId(jwt);
 
-        if (Boolean.FALSE.equals(jwtService.validateToken(jwt, username))) {
-
-            return unauthorized(response);
-
-        }
-
         sessionHandler.setUsername(username);
         sessionHandler.setId(Long.valueOf(userId));
-        
+
         return true;
 
     }

@@ -12,7 +12,6 @@ import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,15 +72,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostWithSummaryTextResponse> getAllByUser() {
 
-        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        final Optional<UserEntity> user = userService.findByUsername(username);
-
-        if (user.isEmpty()) {
-            return List.of();
-        }
-
-        final List<PostEntity> allPostsByUser = postRepository.findAllByUser(user.get());
+        final List<PostEntity> allPostsByUser = postRepository.findAllByUser_Username(sessionHandler.getUsername());
 
         return PostMapper.INSTANCE.allPostEntityToModel(allPostsByUser);
 
