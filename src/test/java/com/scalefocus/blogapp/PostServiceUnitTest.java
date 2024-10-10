@@ -130,8 +130,7 @@ class PostServiceUnitTest {
                         0);
         postEntity.setTags(Set.of(tagEntity));
 
-        when(tagRepository.findByTag(tag)).thenReturn(Optional.of(tagEntity));
-        when(postRepository.findAllByTags(Set.of(tagEntity))).thenReturn(List.of(postEntity));
+        when(postRepository.findAllByTags_Tag(tag)).thenReturn(List.of(postEntity));
 
         //WHEN
         List<GetPostsByTagResponse> foundedPosts = postService.getAllByTag("IT");
@@ -145,7 +144,7 @@ class PostServiceUnitTest {
         assertEquals("Test Post", getPostsByTagResponse.getTitle());
 
         verify(tagRepository, times(1)).findByTag(tag);
-        verify(postRepository, times(1)).findAllByTags(Set.of(tagEntity));
+        verify(postRepository, times(1)).findAllByTags_Tag(tag);
 
     }
 

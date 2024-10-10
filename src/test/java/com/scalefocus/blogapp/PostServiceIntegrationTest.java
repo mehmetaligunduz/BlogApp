@@ -129,7 +129,7 @@ class PostServiceIntegrationTest {
 
         postService.create(postEntity);
 
-        List<PostEntity> allPostsByTag = postRepository.findAllByTags(Set.of(tagEntity));
+        List<PostEntity> allPostsByTag = postRepository.findAllByTags_Tag(tag);
 
         // ASSERT
         assertNotNull(allPostsByTag);

@@ -1,7 +1,6 @@
 package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
-import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.mapper.PostMapper;
@@ -9,14 +8,12 @@ import com.scalefocus.blogapp.model.GetPostsByTagResponse;
 import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
-import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -24,8 +21,6 @@ import java.util.Set;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-
-    private final TagRepository tagRepository;
 
     private final SessionHandler sessionHandler;
 
@@ -104,13 +99,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<GetPostsByTagResponse> getAllByTag(String tag) {
 
-        Optional<TagEntity> tagEntity = tagRepository.findByTag(tag);
-
-        if (tagEntity.isEmpty()) {
-            return List.of();
-        }
-
-        final List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
+        final List<PostEntity> allByTag = postRepository.findAllByTags_Tag(tag);
 
         return PostMapper
                 .INSTANCE
