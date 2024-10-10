@@ -1,6 +1,5 @@
-package com.scalefocus.blogapp.model.base;
+package com.scalefocus.blogapp.model;
 
-import com.scalefocus.blogapp.model.TagModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,18 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagBaseModel {
+public class PostModel {
+
+    private Long id;
 
     private String title;
 
     private String text;
 
+    private boolean isDeleted = Boolean.FALSE;
+
     private Set<TagModel> tags;
+
+    private int version;
 
 }

@@ -3,6 +3,7 @@ package com.scalefocus.blogapp;
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
+import com.scalefocus.blogapp.model.PostModel;
 import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
@@ -161,7 +162,7 @@ class PostServiceUnitTest {
         when(postRepository.findById(any(Long.class))).thenReturn(Optional.of(postEntity));
 
         //WHEN
-        Optional<PostEntity> foundedPost = postService.findById(0L);
+        Optional<PostModel> foundedPost = postService.findById(0L);
 
         //THEN
         foundedPost.ifPresent(pe -> {

@@ -2,15 +2,14 @@ package com.scalefocus.blogapp.service;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
+import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.mapper.TagMapper;
-import com.scalefocus.blogapp.model.AddTagResponse;
-import com.scalefocus.blogapp.model.DeleteTagResponse;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,9 +24,9 @@ public class TagServiceImpl implements TagService {
     private final PostService postService;
 
     @Override
-    public Optional<AddTagResponse> addTag(Set<TagEntity> tags, Long postId) {
+    public Optional<AddTagResponse> addTag(AddTagRequest addTagRequest, Long postId) {
 
-        Optional<PostEntity> post = postService.findById(postId);
+        Optional<PostModel> post = postService.findById(postId);
 
         if (post.isEmpty()) {
 
@@ -35,41 +34,32 @@ public class TagServiceImpl implements TagService {
 
         }
 
-        Set<TagEntity> tagEntities = tags.stream()
-                .map(t -> tagRepository.findByTag(t.getTag())
-                        .orElseGet(() -> {
-                            TagEntity newTag = new TagEntity();
-                            newTag.setTag(t.getTag());
-                            return tagRepository.save(newTag);
-                        })
-                )
-                .collect(Collectors.toSet());
+        Set<TagEntity> tagEntity = addTagRequest
+                .getTags()
+                .stream()
+                .map(t -> tagRepository.findByTag(t)
+                        .orElseGet(() ->
+                                tagRepository.save(new TagEntity(t))
+                        )).collect(Collectors.toSet());
 
 
-        PostEntity getPost = post.get();
+        PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(post.get());
+        postEntity.getTags().addAll(tagEntity);
 
-        if (getPost.getTags() == null) {
 
-            getPost.setTags(tagEntities);
+        Optional<PostModel> postModel = postService.create(postEntity);
 
-        } else {
+        log.info("Post tagged - tag(s): {}", addTagRequest.getTags());
 
-            getPost.getTags().addAll(tagEntities);
-
-        }
-
-        final Optional<PostEntity> taggedPost = postService.create(getPost);
-
-        log.info("Post tagged - tag(s): {}", tags.stream().map(TagEntity::getTag).toList());
-
-        return taggedPost.map(TagMapper.INSTANCE::addTagPostToModel);
+        return postModel
+                .map(TagMapper.INSTANCE::postModelToAddTagResponse);
 
     }
 
     @Override
-    public Optional<DeleteTagResponse> deleteTag(TagEntity tagEntity, Long postId) {
+    public Optional<DeleteTagResponse> deleteTag(DeleteTagRequest deleteTagRequest, Long postId) {
 
-        Optional<PostEntity> post = postService.findById(postId);
+        Optional<PostModel> post = postService.findById(postId);
 
         if (post.isEmpty()) {
 
@@ -77,17 +67,17 @@ public class TagServiceImpl implements TagService {
 
         }
 
-        Set<TagEntity> tags = new HashSet<>(post.get().getTags());
+        TagModel tagModel = new TagModel(deleteTagRequest.getTag());
 
-        tags.remove(tagEntity);
+        post.get().getTags().remove(tagModel);
 
-        post.get().setTags(tags);
+        final PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(post.get());
 
-        Optional<PostEntity> deletedTagPost = postService.create(post.get());
+        Optional<PostModel> savedPostEntity = postService.create(postEntity);
 
-        log.info("Tag deleted from post - tag: {}", tagEntity.getTag());
-
-        return deletedTagPost.map(TagMapper.INSTANCE::deleteTagPostToModel);
+        return savedPostEntity
+                .map(TagMapper
+                        .INSTANCE::postEntityToDeleteTagResponse);
 
     }
 

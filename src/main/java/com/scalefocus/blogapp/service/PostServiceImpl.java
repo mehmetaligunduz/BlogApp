@@ -5,6 +5,7 @@ import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
+import com.scalefocus.blogapp.model.PostModel;
 import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import com.scalefocus.blogapp.repository.PostRepository;
@@ -25,7 +26,7 @@ public class PostServiceImpl implements PostService {
     private final SessionHandler sessionHandler;
 
     @Override
-    public Optional<PostEntity> create(PostEntity postEntity) {
+    public Optional<PostModel> create(PostEntity postEntity) {
 
         postEntity.setUser(new UserEntity(sessionHandler.getId()));
 
@@ -35,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
         log.info("Post created: {}", savedPost.get().getId());
 
-        return savedPost;
+        return Optional.ofNullable(PostMapper.INSTANCE.postEntityToModel(savedPost.get()));
     }
 
     @Override
@@ -108,9 +109,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<PostEntity> findById(Long id) {
+    public Optional<PostModel> findById(Long id) {
 
-        return postRepository.findById(id);
+        final Optional<PostEntity> post = postRepository.findById(id);
+
+        return post.map(PostMapper
+                .INSTANCE::postEntityToModel);
 
     }
 
