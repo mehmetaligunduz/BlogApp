@@ -6,7 +6,7 @@ import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.TagRepository;
 import com.scalefocus.blogapp.service.PostService;
-import com.scalefocus.blogapp.service.TagServiceImpl;
+import com.scalefocus.blogapp.service.impl.TagServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,7 +56,7 @@ class TagServiceUnitTest {
                         "Test Text");
         postEntity.setId(postId);
         postEntity.setTags(tags);
-        
+
         PostModel postModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
 
         when(postService.findById(postId)).thenReturn(Optional.of(postModel));

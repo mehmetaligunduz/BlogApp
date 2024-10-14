@@ -1,4 +1,4 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
@@ -6,6 +6,8 @@ import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.mapper.TagMapper;
 import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.TagRepository;
+import com.scalefocus.blogapp.service.PostService;
+import com.scalefocus.blogapp.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

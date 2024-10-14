@@ -6,7 +6,7 @@ import com.scalefocus.blogapp.mapper.PostMapper;
 import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
-import com.scalefocus.blogapp.service.PostServiceImpl;
+import com.scalefocus.blogapp.service.impl.PostServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

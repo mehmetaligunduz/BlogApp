@@ -1,4 +1,4 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.model.LoginRequest;
@@ -6,6 +6,8 @@ import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.model.RegisterRequest;
 import com.scalefocus.blogapp.model.RegisterResponse;
 import com.scalefocus.blogapp.repository.UserRepository;
+import com.scalefocus.blogapp.service.JwtService;
+import com.scalefocus.blogapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +41,7 @@ public class UserServiceImpl implements UserService {
         );
 
         UserEntity savedUser = userRepository.save(userEntity);
-        
+
         log.info("User registered: {}", savedUser.getDisplayName());
 
         return new RegisterResponse(jwtService.generateToken(savedUser));

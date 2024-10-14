@@ -1,8 +1,9 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jwt.JWTParser;
 import com.scalefocus.blogapp.entity.UserEntity;
+import com.scalefocus.blogapp.service.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Date;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -22,6 +24,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Value("${auth.issuer}")
     private String issuer;
+
 
     @Override
     public String generateToken(UserEntity user) {
@@ -65,6 +68,20 @@ public class JwtServiceImpl implements JwtService {
                 .getJWTClaimsSet()
                 .getClaim("id")
                 .toString();
+    }
+
+    public boolean isTokenExpired(String token) throws ParseException {
+        return JWTParser
+                .parse(token)
+                .getJWTClaimsSet()
+                .getExpirationTime()
+                .before(new Date());
+    }
+
+    public boolean isTokenValid(String token) throws ParseException {
+
+        return Boolean.FALSE.equals(isTokenExpired(token));
+
     }
 
 }

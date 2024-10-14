@@ -1,7 +1,7 @@
 package com.scalefocus.blogapp.interceptor;
 
 import com.scalefocus.blogapp.handler.SessionHandler;
-import com.scalefocus.blogapp.service.JwtServiceImpl;
+import com.scalefocus.blogapp.service.impl.JwtServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +38,12 @@ public class JwtInterceptor implements HandlerInterceptor {
         final String jwt = authorization.substring(TOKEN_PREFIX.length());
         final String username = jwtService.extractUsername(jwt);
         final String userId = jwtService.extractUserId(jwt);
+
+        if (Boolean.FALSE.equals(jwtService.isTokenValid(jwt))) {
+
+            return unauthorized(response);
+
+        }
 
         sessionHandler.setUsername(username);
         sessionHandler.setId(Long.valueOf(userId));
