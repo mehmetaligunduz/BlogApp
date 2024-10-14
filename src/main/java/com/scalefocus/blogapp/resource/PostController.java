@@ -24,17 +24,11 @@ public class PostController {
     @PostMapping
     @Operation(summary = "Create a new blog post",
             description = "This endpoint allows you to create a new blog post. You must provide the title, text.")
-    public ResponseEntity<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+    public ResponseEntity<PostModel> createPost(@Valid @RequestBody PostModel postModel) {
 
-        sessionHandler.getUsername();
-
-        return postService
-                .create(createPostRequest.toEntity())
-                .map(pe -> ResponseEntity
-                        .ok(new CreatePostResponse(pe.getId())))
-                .orElse(ResponseEntity
-                        .badRequest()
-                        .build());
+        return postService.create(postModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.badRequest().build());
 
     }
 
@@ -54,7 +48,7 @@ public class PostController {
     public ResponseEntity<UpdatePostResponse> updatePost(@RequestBody UpdatePostRequest updatePostRequest, @PathVariable Long postId) {
 
         return postService
-                .update(updatePostRequest.toEntity(), postId)
+                .update(updatePostRequest, postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
 

@@ -2,8 +2,8 @@ package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
-import com.scalefocus.blogapp.model.AddTagResponse;
-import com.scalefocus.blogapp.model.DeleteTagResponse;
+import com.scalefocus.blogapp.mapper.PostMapper;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.TagRepository;
 import com.scalefocus.blogapp.service.PostService;
 import com.scalefocus.blogapp.service.TagService;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,17 +40,18 @@ class TagServiceIntegrationTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
         postEntity.setId(11L);
 
-        TagEntity tag1 = new TagEntity("IT");
-        TagEntity tag2 = new TagEntity("Java");
-        Set<TagEntity> tags = Set.of(tag1, tag2);
+        PostModel postModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
 
         // ACT
-        postService.create(postEntity);
-        Optional<AddTagResponse> addTagResponse = tagService.addTag(tags, postEntity.getId());
+        postService.create(postModel);
+
+        AddTagRequest addTagRequest = new AddTagRequest();
+        addTagRequest.setTags(List.of("IT", "Java"));
+
+        Optional<AddTagResponse> addTagResponse = tagService.addTag(addTagRequest, postEntity.getId());
 
         addTagResponse.ifPresent(
                 atr -> {
@@ -78,14 +80,21 @@ class TagServiceIntegrationTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
         postEntity.setId(11L);
 
+        PostModel postModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
+
+        AddTagRequest addTagRequest = new AddTagRequest();
+        addTagRequest.setTags(List.of("IT", "Java"));
+
+        DeleteTagRequest deleteTagRequest = new DeleteTagRequest();
+        deleteTagRequest.setTag("IT");
+
         // ACT
-        postService.create(postEntity);
-        tagService.addTag(tags, postEntity.getId());
-        Optional<DeleteTagResponse> deleteTagResponse = tagService.deleteTag(tag2, postEntity.getId());
+        postService.create(postModel);
+        tagService.addTag(addTagRequest, postEntity.getId());
+        Optional<DeleteTagResponse> deleteTagResponse = tagService.deleteTag(deleteTagRequest, postEntity.getId());
 
         deleteTagResponse.ifPresent(dtr -> {
             // ASSERT

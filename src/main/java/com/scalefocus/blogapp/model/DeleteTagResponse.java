@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class DeleteTagResponse extends TagBaseModel {
 
-    public DeleteTagResponse(String title, String text, Set<TagsResponse> tags) {
+    public DeleteTagResponse(String title, String text, Set<TagModel> tags) {
 
         super(title, text, tags);
 

@@ -1,4 +1,4 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.repository.UserRepository;

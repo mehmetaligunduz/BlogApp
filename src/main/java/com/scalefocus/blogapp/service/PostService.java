@@ -1,9 +1,6 @@
 package com.scalefocus.blogapp.service;
 
-import com.scalefocus.blogapp.entity.PostEntity;
-import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
-import com.scalefocus.blogapp.model.UpdatePostResponse;
+import com.scalefocus.blogapp.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +9,13 @@ public interface PostService {
 
     List<PostWithSummaryTextResponse> getAll();
 
-    Optional<PostEntity> findById(Long id);
+    Optional<PostModel> findById(Long id);
 
-    Optional<PostEntity> create(PostEntity postEntity);
+    Optional<PostModel> create(PostModel postModel);
 
     List<GetPostsByTagResponse> getAllByTag(String tag);
 
-    Optional<UpdatePostResponse> update(PostEntity postEntity, Long id);
+    Optional<UpdatePostResponse> update(UpdatePostRequest updatePostRequest, Long id);
 
     List<PostWithSummaryTextResponse> getAllByUser();
 

@@ -1,23 +1,18 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.scalefocus.blogapp.entity.PostEntity;
-import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.entity.UserEntity;
 import com.scalefocus.blogapp.handler.SessionHandler;
 import com.scalefocus.blogapp.mapper.PostMapper;
-import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
-import com.scalefocus.blogapp.model.UpdatePostResponse;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.PostRepository;
-import com.scalefocus.blogapp.repository.TagRepository;
+import com.scalefocus.blogapp.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -26,14 +21,12 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
 
-    private final TagRepository tagRepository;
-
-    private final UserService userService;
-
     private final SessionHandler sessionHandler;
 
     @Override
-    public Optional<PostEntity> create(PostEntity postEntity) {
+    public Optional<PostModel> create(PostModel postModel) {
+
+        PostEntity postEntity = PostMapper.INSTANCE.postModelToEntity(postModel);
 
         postEntity.setUser(new UserEntity(sessionHandler.getId()));
 
@@ -43,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
         log.info("Post created: {}", savedPost.get().getId());
 
-        return savedPost;
+        return Optional.ofNullable(PostMapper.INSTANCE.postEntityToModel(savedPost.get()));
     }
 
     @Override
@@ -51,21 +44,25 @@ public class PostServiceImpl implements PostService {
 
         final List<PostEntity> allPosts = postRepository.findAll();
 
-        return PostMapper.INSTANCE.allPostsEntityToModel(allPosts);
+        return PostMapper
+                .INSTANCE
+                .allPostsEntityToModel(allPosts);
+
     }
 
     @Override
-    public Optional<UpdatePostResponse> update(PostEntity postEntity, Long id) {
-
+    public Optional<UpdatePostResponse> update(UpdatePostRequest updatePostRequest, Long id) {
 
         return postRepository.findById(id)
                 .map(post -> {
-                    post.setTitle(postEntity.getTitle());
-                    post.setText(postEntity.getText());
+                    post.setTitle(updatePostRequest.getTitle());
+                    post.setText(updatePostRequest.getText());
 
                     final PostEntity updatedPost = postRepository.save(post);
 
-                    return PostMapper.INSTANCE.updatePostEntityToModel(updatedPost);
+                    return PostMapper
+                            .INSTANCE
+                            .updatePostEntityToModel(updatedPost);
                 });
 
     }
@@ -73,17 +70,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostWithSummaryTextResponse> getAllByUser() {
 
-        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        final List<PostEntity> allPostsByUser = postRepository
+                .findAllByUser_Username(sessionHandler.getUsername());
 
-        final Optional<UserEntity> user = userService.findByUsername(username);
-
-        if (user.isEmpty()) {
-            return List.of();
-        }
-
-        final List<PostEntity> allPostsByUser = postRepository.findAllByUser(user.get());
-
-        return PostMapper.INSTANCE.allPostEntityToModel(allPostsByUser);
+        return PostMapper
+                .INSTANCE
+                .allPostEntityToModel(allPostsByUser);
 
     }
 
@@ -108,21 +100,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<GetPostsByTagResponse> getAllByTag(String tag) {
 
-        Optional<TagEntity> tagEntity = tagRepository.findByTag(tag);
+        final List<PostEntity> allByTag = postRepository.findAllByTags_Tag(tag);
 
-        if (tagEntity.isEmpty()) {
-            return List.of();
-        }
-
-        final List<PostEntity> allByTag = postRepository.findAllByTags(Set.of(tagEntity.get()));
-
-        return PostMapper.INSTANCE.postEntityToModelWithTags(allByTag);
+        return PostMapper
+                .INSTANCE
+                .postEntityToModelWithTags(allByTag);
 
     }
 
     @Override
-    public Optional<PostEntity> findById(Long id) {
-        return postRepository.findById(id);
+    public Optional<PostModel> findById(Long id) {
+
+        final Optional<PostEntity> post = postRepository.findById(id);
+
+        return post.map(PostMapper
+                .INSTANCE::postEntityToModel);
+
     }
 
     @Override

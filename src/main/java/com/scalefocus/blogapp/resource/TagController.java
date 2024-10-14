@@ -28,7 +28,7 @@ public class TagController {
     public ResponseEntity<AddTagResponse> addTagToPost(@RequestBody AddTagRequest addTagRequest,
                                                        @PathVariable Long postId) {
 
-        return tagService.addTag(addTagRequest.toTagEntity(), postId)
+        return tagService.addTag(addTagRequest, postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity
                         .badRequest()
@@ -44,7 +44,7 @@ public class TagController {
     public ResponseEntity<DeleteTagResponse> deleteTagFromPost(@RequestBody @Valid DeleteTagRequest deleteTagRequest,
                                                                @PathVariable Long postId) {
 
-        return tagService.deleteTag(deleteTagRequest.toTagEntity(), postId)
+        return tagService.deleteTag(deleteTagRequest, postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity
                         .badRequest()

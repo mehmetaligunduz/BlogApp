@@ -2,12 +2,11 @@ package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
-import com.scalefocus.blogapp.model.GetPostsByTagResponse;
-import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
-import com.scalefocus.blogapp.model.UpdatePostResponse;
+import com.scalefocus.blogapp.mapper.PostMapper;
+import com.scalefocus.blogapp.model.*;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.repository.TagRepository;
-import com.scalefocus.blogapp.service.PostServiceImpl;
+import com.scalefocus.blogapp.service.impl.PostServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,13 +43,14 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
+        PostModel postModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
+
         //WHEN
-        Optional<PostEntity> savedPost = postService.create(postEntity);
+        Optional<PostModel> savedPost = postService.create(postModel);
 
         //THEN
         savedPost.ifPresent(pe -> {
@@ -69,8 +69,7 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
         List<PostEntity> postEntityList = List.of(postEntity);
 
@@ -92,8 +91,7 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
 
         when(postRepository.findById(any(Long.class))).thenReturn(Optional.of(postEntity));
@@ -101,7 +99,10 @@ class PostServiceUnitTest {
 
         //WHEN
         postEntity.setTitle("Test Post Updated");
-        Optional<UpdatePostResponse> updatedPost = postService.update(postEntity, 0L);
+
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("Title Test Post Updated", "Text Test Post Updated");
+
+        Optional<UpdatePostResponse> updatedPost = postService.update(updatePostRequest, 0L);
 
         updatedPost.ifPresent(up -> {
 
@@ -126,12 +127,10 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
         postEntity.setTags(Set.of(tagEntity));
 
-        when(tagRepository.findByTag(tag)).thenReturn(Optional.of(tagEntity));
-        when(postRepository.findAllByTags(Set.of(tagEntity))).thenReturn(List.of(postEntity));
+        when(postRepository.findAllByTags_Tag(tag)).thenReturn(List.of(postEntity));
 
         //WHEN
         List<GetPostsByTagResponse> foundedPosts = postService.getAllByTag("IT");
@@ -145,7 +144,7 @@ class PostServiceUnitTest {
         assertEquals("Test Post", getPostsByTagResponse.getTitle());
 
         verify(tagRepository, times(1)).findByTag(tag);
-        verify(postRepository, times(1)).findAllByTags(Set.of(tagEntity));
+        verify(postRepository, times(1)).findAllByTags_Tag(tag);
 
     }
 
@@ -156,13 +155,12 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
         when(postRepository.findById(any(Long.class))).thenReturn(Optional.of(postEntity));
 
         //WHEN
-        Optional<PostEntity> foundedPost = postService.findById(0L);
+        Optional<PostModel> foundedPost = postService.findById(0L);
 
         //THEN
         foundedPost.ifPresent(pe -> {
@@ -179,14 +177,15 @@ class PostServiceUnitTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
         postEntity.setId(1L);
 
         when(postRepository.save(any(PostEntity.class))).thenReturn(postEntity);
 
+        PostModel postModel = PostMapper.INSTANCE.postEntityToModel(postEntity);
+
         //WHEN
-        Optional<PostEntity> createPostResponse = postService.create(postEntity);
+        Optional<PostModel> createPostResponse = postService.create(postModel);
 
         //THEN
         createPostResponse.ifPresent(

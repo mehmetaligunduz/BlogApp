@@ -1,7 +1,9 @@
 package com.scalefocus.blogapp;
 
 import com.scalefocus.blogapp.entity.PostEntity;
-import com.scalefocus.blogapp.entity.TagEntity;
+import com.scalefocus.blogapp.model.PostModel;
+import com.scalefocus.blogapp.model.TagModel;
+import com.scalefocus.blogapp.model.UpdatePostRequest;
 import com.scalefocus.blogapp.repository.PostRepository;
 import com.scalefocus.blogapp.service.PostService;
 import jakarta.transaction.Transactional;
@@ -35,8 +37,7 @@ class PostServiceIntegrationTest {
         PostEntity postEntity =
                 new PostEntity(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
         // ACT
         PostEntity savedPost = postRepository.save(postEntity);
@@ -56,21 +57,19 @@ class PostServiceIntegrationTest {
     void testGetAllPosts() {
 
         // ARRANGE
-        PostEntity postEntity =
-                new PostEntity(
+        PostModel postModel =
+                new PostModel(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
-        PostEntity postEntity1 =
-                new PostEntity(
+        PostModel postModel1 =
+                new PostModel(
                         "Test Post1",
-                        "Test Text1",
-                        0);
+                        "Test Text1");
 
         // ACT
-        postService.create(postEntity);
-        postService.create(postEntity1);
+        postService.create(postModel);
+        postService.create(postModel1);
 
         List<PostEntity> allPosts = postRepository.findAll();
 
@@ -83,27 +82,27 @@ class PostServiceIntegrationTest {
     void testUpdatePost() {
 
         // ARRANGE
-        PostEntity postEntity =
-                new PostEntity(
+        PostModel postModel =
+                new PostModel(
                         "Test Post",
-                        "Test Text",
-                        0);
-        postEntity.setId(11L);
+                        "Test Text");
+        postModel.setId(11L);
 
         // ACT
-        Optional<PostEntity> createdPost = postService.create(postEntity);
+        Optional<PostModel> createdPost = postService.create(postModel);
 
         if (createdPost.isEmpty()) {
             return;
         }
 
+        UpdatePostRequest updatePostRequest = new UpdatePostRequest("new Title", "new Text");
+
         // ACT
-        postEntity.setTitle("Updated Test Post");
-        postService.update(postEntity, createdPost.get().getId());
+        postService.update(updatePostRequest, createdPost.get().getId());
 
         // ASSERT
         assertNotNull(createdPost.get().getId());
-        postRepository.findById(postEntity.getId()).ifPresent(post -> {
+        postRepository.findById(postModel.getId()).ifPresent(post -> {
             assertEquals(11L, post.getId());
             assertEquals("Updated Test Post", post.getTitle());
         });
@@ -115,21 +114,20 @@ class PostServiceIntegrationTest {
 
         // ARRANGE
         String tag = "IT";
-        TagEntity tagEntity = new TagEntity(tag);
+        TagModel tagModel = new TagModel(tag);
 
-        PostEntity postEntity =
-                new PostEntity(
+        PostModel postModel =
+                new PostModel(
                         "Test Post",
-                        "Test Text",
-                        0);
+                        "Test Text");
 
-        postEntity.setTags(Set.of(tagEntity));
+        postModel.setTags(Set.of(tagModel));
 
         // ACT
 
-        postService.create(postEntity);
+        postService.create(postModel);
 
-        List<PostEntity> allPostsByTag = postRepository.findAllByTags(Set.of(tagEntity));
+        List<PostEntity> allPostsByTag = postRepository.findAllByTags_Tag(tag);
 
         // ASSERT
         assertNotNull(allPostsByTag);
@@ -141,20 +139,19 @@ class PostServiceIntegrationTest {
     void testFindPostById() {
 
         // ARRANGE
-        PostEntity postEntity =
-                new PostEntity(
+        PostModel postModel =
+                new PostModel(
                         "Test Post",
-                        "Test Text",
-                        0);
-        postEntity.setId(1L);
+                        "Test Text");
+        postModel.setId(1L);
 
         // ACT
-        postService.create(postEntity);
+        postService.create(postModel);
 
-        postService.findById(postEntity.getId());
+        postService.findById(postModel.getId());
 
         // ASSERT
-        postRepository.findById(postEntity.getId()).ifPresent(post -> {
+        postRepository.findById(postModel.getId()).ifPresent(post -> {
             assertEquals("Test Post", post.getTitle());
         });
 
@@ -164,18 +161,17 @@ class PostServiceIntegrationTest {
     void testCreatePost() {
 
         // ARRANGE
-        PostEntity postEntity =
-                new PostEntity(
+        PostModel postModel =
+                new PostModel(
                         "Test Post",
-                        "Test Text",
-                        0);
-        postEntity.setId(1L);
+                        "Test Text");
+        postModel.setId(1L);
 
         // ACT
-        postService.create(postEntity);
+        postService.create(postModel);
 
         // ASSERT
-        postRepository.findById(postEntity.getId()).ifPresent(post -> {
+        postRepository.findById(postModel.getId()).ifPresent(post -> {
             assertEquals("Test Text", post.getText());
         });
 
