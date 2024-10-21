@@ -3,6 +3,7 @@ package com.scalefocus.blogapp.mapper;
 import com.scalefocus.blogapp.entity.PostEntity;
 import com.scalefocus.blogapp.entity.TagEntity;
 import com.scalefocus.blogapp.model.GetPostsByTagResponse;
+import com.scalefocus.blogapp.model.PostModel;
 import com.scalefocus.blogapp.model.PostWithSummaryTextResponse;
 import com.scalefocus.blogapp.model.UpdatePostResponse;
 import org.mapstruct.Mapper;
@@ -23,6 +24,10 @@ public interface PostMapper {
     List<PostWithSummaryTextResponse> allPostsEntityToModel(List<PostEntity> postEntities);
 
     UpdatePostResponse updatePostEntityToModel(PostEntity postEntity);
+
+    PostModel postEntityToModel(PostEntity postEntity);
+
+    PostEntity postModelToEntity(PostModel postModel);
 
     @Mapping(source = "tags", target = "tags", qualifiedByName = "setToString")
     List<GetPostsByTagResponse> postEntityToModelWithTags(List<PostEntity> postEntities);

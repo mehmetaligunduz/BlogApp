@@ -2,7 +2,7 @@ spring:
   application:
     name: BlogApp
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/blogappdb
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/blogappdb
     username: ${MYSQL_USER:root}
     password: ${MYSQL_PASSWORD:root}
   h2:

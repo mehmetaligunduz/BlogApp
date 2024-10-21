@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class TagController {
 
     private final TagService tagService;
 
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
     @PostMapping("/posts/{postId}")
     @Operation(
             summary = "Add tag(s) to a post",
@@ -26,13 +28,14 @@ public class TagController {
     public ResponseEntity<AddTagResponse> addTagToPost(@RequestBody AddTagRequest addTagRequest,
                                                        @PathVariable Long postId) {
 
-        return tagService.addTag(addTagRequest.toTagEntity(), postId)
+        return tagService.addTag(addTagRequest, postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity
                         .badRequest()
                         .build());
     }
 
+    @PreAuthorize("@postServiceImpl.isOwner(#postId)")
     @DeleteMapping("/posts/{postId}")
     @Operation(
             summary = "Remove a tag from a post",
@@ -41,7 +44,7 @@ public class TagController {
     public ResponseEntity<DeleteTagResponse> deleteTagFromPost(@RequestBody @Valid DeleteTagRequest deleteTagRequest,
                                                                @PathVariable Long postId) {
 
-        return tagService.deleteTag(deleteTagRequest.toTagEntity(), postId)
+        return tagService.deleteTag(deleteTagRequest, postId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity
                         .badRequest()

@@ -5,13 +5,9 @@ import com.scalefocus.blogapp.model.LoginResponse;
 import com.scalefocus.blogapp.model.RegisterRequest;
 import com.scalefocus.blogapp.model.RegisterResponse;
 import com.scalefocus.blogapp.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,17 +29,8 @@ public class UserController {
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity
                 .ok(userService
-                        .register(registerRequest
-                                .toEntity()
-                        )
+                        .register(registerRequest)
                 );
-    }
-
-    @PostMapping("/logout")
-    public void logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, authentication);
-
     }
 
 }

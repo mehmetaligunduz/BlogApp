@@ -1,7 +1,6 @@
-package com.scalefocus.blogapp.service;
+package com.scalefocus.blogapp.service.impl;
 
 import com.scalefocus.blogapp.entity.UserEntity;
-import com.scalefocus.blogapp.handler.AuthenticationHandler;
 import com.scalefocus.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -28,8 +27,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         final UserEntity userEntity = user.get();
-
-        AuthenticationHandler.setUser(userEntity);
 
         return User
                 .withUsername(userEntity.getUsername())

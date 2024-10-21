@@ -38,10 +38,10 @@ public class PostEntity extends BaseEntity {
     private Set<TagEntity> tags;
 
 
-    public PostEntity(String title, String text, int version) {
+    public PostEntity(String title, String text) {
         this.title = title;
         this.text = text;
-        setVersion(version);
+        setVersion(0);
     }
 
 }

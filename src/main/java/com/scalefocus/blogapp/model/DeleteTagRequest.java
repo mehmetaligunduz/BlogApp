@@ -1,6 +1,5 @@
 package com.scalefocus.blogapp.model;
 
-import com.scalefocus.blogapp.entity.TagEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +14,5 @@ public class DeleteTagRequest {
 
     @NotNull
     private String tag;
-
-    public TagEntity toTagEntity() {
-        return new TagEntity(tag);
-    }
 
 }
