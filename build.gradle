@@ -2,6 +2,14 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.3'
     id 'io.spring.dependency-management' version '1.1.6'
+    id "org.sonarqube" version "5.1.0.4882"
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "mehmetaligunduz_BlogApp_a9d0f531-547a-4d41-bc08-0fe69bb23ac4"
+        property "sonar.projectName", "BlogApp"
+    }
 }
 
 group = 'com.scalefocus'
