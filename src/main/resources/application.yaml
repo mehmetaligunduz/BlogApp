@@ -1,4 +1,10 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          my-client:
+            redirect-uri: http://localhost:8080/callback
   application:
     name: BlogApp
   datasource:
