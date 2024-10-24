@@ -24,6 +24,37 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     restart: unless-stopped
-
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:latest
+    restart: unless-stopped
+    depends_on:
+      - sonarqube-db
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/sonarqube
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    ports:
+      - "9000:9000"
+  sonarqube-db:
+    image: postgres:latest
+    container_name: sonarqube-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=sonarqube
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    ports:
+      - "5432:5432"
+    volumes:
+      - sonarqube_db_data:/var/lib/postgresql/data
 volumes:
   mysql-data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_db_data:
