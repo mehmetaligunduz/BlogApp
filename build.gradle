@@ -10,7 +10,7 @@ sonar {
         property "sonar.projectKey", "mehmetaligunduz_BlogApp_a9d0f531-547a-4d41-bc08-0fe69bb23ac4"
         property "sonar.projectName", "BlogApp"
         property "sonar.host.url", "http://localhost:9000"
-        property "sonar.login", "sqa_14c82f0a2157229111fcfa6564d976916b5df274"
+        property "sonar.token", "sqa_14c82f0a2157229111fcfa6564d976916b5df274"
     }
 }
 
